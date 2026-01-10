@@ -19,22 +19,25 @@ function CommunityPartners() {
     const nextCloudIdRef = useRef(0);
     const cloudsRef = useRef<Cloud[]>([]);
     const animationRef = useRef<number | null>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
 
     const MAX_CLOUDS = 6;
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
-
+    const [containerWidth, setContainerWidth] = useState(0);
 
     useEffect(() => {
-        const handleResize = () => setWindowWidth(window.innerWidth);
+        const handleResize = () => {
+            setWindowWidth(window.innerWidth);
+            if (containerRef.current) {
+                setContainerWidth(containerRef.current.offsetWidth);
+            }
+        };
+        handleResize();
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-
-
     const nonagonPoints = useMemo(() => {
-
         const basePoints = [
             [1.6653345369377348e-16, -0.45621778264910706],
             [0.42316992428735756, -0.5461653267577913],
@@ -45,9 +48,8 @@ function CommunityPartners() {
             [0.2768300757126425, 0.8461653267577913],
             [-0.11839142445120077, 0.670201377834176],
             [-0.3347033205136639, 0.2955381835724315],
-            [-0.2894818203498206, -0.1347156501530601]
+            [-0.2894818203498206, -0.1347156501530601],
         ];
-
 
         const aspectRatio = windowWidth / window.innerHeight;
         const compensationFactor = aspectRatio < 1 ? 1 / aspectRatio : 1;
@@ -60,19 +62,29 @@ function CommunityPartners() {
         return adjustedPoints.join(' ');
     }, [windowWidth]);
 
-
     const communityLogos = [
         '/community1.png',
         '/community2.png',
         '/community3.png',
         '/community4.png',
-        '/community5.png',
     ];
 
     const socialLinks = [
-        { name: 'facebook', icon: '/facebook.png', url: '#' },
-        { name: 'instagram', icon: '/instagram.png', url: '#' },
-        { name: 'linkedin', icon: '/linkedin.png', url: '#' },
+        {
+            name: 'instagram',
+            icon: '/instagram.png',
+            url: 'https://www.instagram.com/hack_at_arch/',
+        },
+        {
+            name: 'linkedin',
+            icon: '/linkedin.png',
+            url: 'https://www.linkedin.com/in/hack-at-arch-4a7b26238/',
+        },
+        {
+            name: 'linkedin',
+            icon: '/linkedin.png',
+            url: 'https://www.linkedin.com/in/hack-at-arch-4a7b26238/',
+        },
         { name: 'youtube', icon: '/youtube.png', url: '#' },
         { name: 'telegram', icon: '/telegram.png', url: '#' },
     ];
@@ -84,7 +96,6 @@ function CommunityPartners() {
         { name: 'Privacy Policy', url: '#' },
     ];
 
-
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrentLogoIndex((prev) => (prev + 1) % communityLogos.length);
@@ -92,7 +103,6 @@ function CommunityPartners() {
 
         return () => clearInterval(interval);
     }, [communityLogos.length]);
-
 
     useEffect(() => {
         cloudsRef.current = clouds;
@@ -106,11 +116,11 @@ function CommunityPartners() {
                 }
 
                 const speed = Math.random() * 0.5 + 0.6;
-                const size = (1 / speed) * 200 + 100;
+                const size = (1 / speed) * 200 + 200;
 
-                const newX = isInitialLoad ? Math.random() * window.innerWidth : - size;
+                const width = containerWidth || window.innerWidth;
+                const newX = isInitialLoad ? Math.random() * width : -size;
                 const newY = Math.random() * 40;
-
 
                 const cloud: Cloud = {
                     id: nextCloudIdRef.current,
@@ -128,25 +138,28 @@ function CommunityPartners() {
             setTimeout(spawnCloud, i * 10);
         }
 
-        setTimeout(() => {
-            setIsInitialLoad(false);
-        }, MAX_CLOUDS * 500 + 500);
+        setTimeout(
+            () => {
+                setIsInitialLoad(false);
+            },
+            MAX_CLOUDS * 500 + 500
+        );
 
         const spawnInterval = setInterval(spawnCloud, 3000);
 
         return () => clearInterval(spawnInterval);
-    }, [isInitialLoad, MAX_CLOUDS]);
-
+    }, [isInitialLoad, MAX_CLOUDS, containerWidth]);
 
     useEffect(() => {
         const animateClouds = () => {
+            const width = containerWidth || window.innerWidth;
             setClouds((prev) =>
                 prev
                     .map((cloud) => ({
                         ...cloud,
                         x: cloud.x + cloud.speed,
                     }))
-                    .filter((cloud) => cloud.x < window.innerWidth + cloud.size)
+                    .filter((cloud) => cloud.x < width + cloud.size)
             );
             animationRef.current = requestAnimationFrame(animateClouds);
         };
@@ -158,11 +171,12 @@ function CommunityPartners() {
                 cancelAnimationFrame(animationRef.current);
             }
         };
-    }, []);
+    }, [containerWidth]);
 
     return (
         <>
             <div
+                ref={containerRef}
                 style={{
                     width: '100%',
                     minHeight: '100vh',
@@ -173,7 +187,7 @@ function CommunityPartners() {
             >
                 <svg
                     style={{
-                        position: 'fixed',
+                        position: 'absolute',
                         top: 0,
                         left: 0,
                         width: '100%',
@@ -209,7 +223,7 @@ function CommunityPartners() {
 
                 <div
                     style={{
-                        position: 'fixed',
+                        position: 'absolute',
                         top: 0,
                         left: 0,
                         width: '100%',
@@ -258,7 +272,6 @@ function CommunityPartners() {
                         flexDirection: 'column',
                     }}
                 >
-
                     <div
                         style={{
                             flex: 1,
@@ -267,7 +280,6 @@ function CommunityPartners() {
                             paddingBottom: '3vh',
                         }}
                     >
-
                         <div
                             style={{
                                 fontFamily: "'Staatliches', cursive",
@@ -281,7 +293,6 @@ function CommunityPartners() {
                             <h1 style={{ margin: 0 }}>COMMUNITY PARTNERS</h1>
                         </div>
 
-
                         <div
                             style={{
                                 display: 'flex',
@@ -294,7 +305,7 @@ function CommunityPartners() {
                                 style={{
                                     width: 'min(40vh, 40vw)',
                                     height: 'min(40vh, 40vw)',
-                                    background: 'rgba(255, 255, 255, 0.3)',
+                                    background: 'black',
                                     borderRadius: '3vh',
                                     display: 'flex',
                                     justifyContent: 'center',
@@ -329,7 +340,6 @@ function CommunityPartners() {
                             gap: '3vh',
                         }}
                     >
-
                         <div
                             style={{
                                 display: 'flex',
@@ -377,7 +387,7 @@ function CommunityPartners() {
                                         height: '50px',
                                         minWidth: '40px',
                                         minHeight: '40px',
-                                        backgroundColor: "black",
+                                        backgroundColor: 'black',
                                         borderRadius: '50%',
                                         display: 'flex',
                                         justifyContent: 'center',
@@ -402,7 +412,6 @@ function CommunityPartners() {
                                             height: '100%',
                                             objectFit: 'contain',
                                             display: 'block',
-
                                         }}
                                         onError={(e) => {
                                             console.error(`Failed to load ${social.name} icon`);

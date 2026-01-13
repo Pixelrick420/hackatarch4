@@ -80,11 +80,6 @@ function CommunityPartners() {
             icon: '/linkedin.png',
             url: 'https://www.linkedin.com/in/hack-at-arch-4a7b26238/',
         },
-        {
-            name: 'linkedin',
-            icon: '/linkedin.png',
-            url: 'https://www.linkedin.com/in/hack-at-arch-4a7b26238/',
-        },
         { name: 'youtube', icon: '/youtube.png', url: '#' },
         { name: 'telegram', icon: '/telegram.png', url: '#' },
     ];
@@ -183,6 +178,7 @@ function CommunityPartners() {
                     margin: 0,
                     padding: 0,
                     position: 'relative',
+                    overflowX: 'hidden',
                 }}
             >
                 <svg
@@ -283,7 +279,7 @@ function CommunityPartners() {
                         <div
                             style={{
                                 fontFamily: "'Staatliches', cursive",
-                                paddingLeft: '5vw',
+                                paddingLeft: '3vw',
                                 paddingTop: '5vh',
                                 fontSize: 'clamp(2rem, 5vh, 5vh)',
                                 letterSpacing: '0.05em',
@@ -303,14 +299,14 @@ function CommunityPartners() {
                         >
                             <div
                                 style={{
-                                    width: 'min(40vh, 40vw)',
-                                    height: 'min(40vh, 40vw)',
-                                    background: 'black',
+                                    width: 'min(40vh, 60vw)',
+                                    height: 'min(40vh, 60vw)',
+                                    backgroundColor: 'rgba(0, 0, 0, 0.2)',
                                     borderRadius: '3vh',
                                     display: 'flex',
                                     justifyContent: 'center',
                                     alignItems: 'center',
-                                    padding: '4vh',
+                                    padding: '2vh',
                                 }}
                             >
                                 <img
@@ -332,6 +328,7 @@ function CommunityPartners() {
 
                     <div
                         style={{
+                            marginTop: '20vh',
                             paddingTop: '8vh',
                             paddingBottom: '4vh',
                             display: 'flex',

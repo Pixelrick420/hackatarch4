@@ -281,7 +281,7 @@ function CommunityPartners() {
                                 fontFamily: "'Staatliches', cursive",
                                 paddingLeft: '3vw',
                                 paddingTop: '5vh',
-                                fontSize: 'clamp(2rem, 5vh, 5vh)',
+                                fontSize: 'clamp(2rem, 4vh, 5vh)',
                                 letterSpacing: '0.05em',
                                 marginBottom: '3vh',
                             }}

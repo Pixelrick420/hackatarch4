@@ -88,7 +88,6 @@ function CommunityPartners() {
         { name: 'Home', url: '#' },
         { name: 'Contact us', url: '#' },
         { name: 'About us', url: '#' },
-        { name: 'Privacy Policy', url: '#' },
     ];
 
     useEffect(() => {

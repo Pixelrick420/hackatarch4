@@ -20,3 +20,17 @@ body {
     font-family: 'American Captain';
     src: url('/american_captain/American Captain.otf') format('opentype');
 }
+
+@font-face {
+    font-family: 'Arcade Classic';
+    src: url('/arcade_classic_2/ARCADECLASSIC.TTF') format('truetype');
+}
+
+@keyframes spin {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}

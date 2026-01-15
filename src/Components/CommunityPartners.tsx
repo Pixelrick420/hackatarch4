@@ -278,7 +278,7 @@ function CommunityPartners() {
                     >
                         <div
                             style={{
-                                fontFamily: "'Staatliches', cursive",
+                                fontFamily: "'American' Captain",
                                 paddingLeft: '3vw',
                                 paddingTop: '5vh',
                                 fontSize: 'clamp(2rem, 4vh, 5vh)',
@@ -353,7 +353,7 @@ function CommunityPartners() {
                                     style={{
                                         color: 'white',
                                         textDecoration: 'none',
-                                        fontFamily: "'Staatliches', cursive",
+                                        fontFamily: "'American' Captain",
                                         fontSize: 'clamp(1rem, 2vw, 1.2rem)',
                                         letterSpacing: '0.05em',
                                         transition: 'opacity 0.3s',

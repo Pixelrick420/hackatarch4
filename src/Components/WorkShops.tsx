@@ -172,18 +172,58 @@ export default function Workshops() {
                     />
                 </div>
                 {screenWidth >= 1300 && (
-                    <img
-                        src="/workshopimage.png"
-                        alt=""
+                    <div
                         style={{
+                            pointerEvents: 'none',
+                            userSelect: 'none',
+                            WebkitUserSelect: 'none',
+                            MozUserSelect: 'none',
+                            msUserSelect: 'none',
                             position: 'absolute',
                             right: '2vw',
                             height: '40vh',
                             objectFit: 'contain',
                         }}
-                    />
+                    >
+                        <img src="/workshopimage.png" alt="" />
+                    </div>
                 )}
             </div>
+            <div
+                style={{
+                    position: 'relative',
+                    width: '100vw',
+                    overflow: 'hidden',
+                    userSelect: 'none',
+                    WebkitUserSelect: 'none',
+                    MozUserSelect: 'none',
+                    msUserSelect: 'none',
+                }}
+            >
+                <div
+                    style={{
+                        display: 'grid',
+                        gridAutoFlow: 'column',
+                        gridAutoColumns: 'minmax(1vh, 1fr)',
+                        width: '200vw',
+                        animation: 'scrollRight 40s infinite linear',
+                    }}
+                >
+                    {Array.from({ length: Math.ceil(screenWidth / 25) * 2 }).map((_, i) => (
+                        <img
+                            key={i}
+                            src="/x.png"
+                            alt=""
+                            style={{
+                                width: '2vh',
+                                height: 'auto',
+                                objectFit: 'contain',
+                            }}
+                        />
+                    ))}
+                </div>
+            </div>
+
             {notes.map((note) => {
                 const noteImage = noteImages[note.id % noteImages.length];
                 return (
@@ -197,6 +237,10 @@ export default function Workshops() {
                             height: `${note.size}px`,
                             zIndex: 1,
                             pointerEvents: 'none',
+                            userSelect: 'none',
+                            WebkitUserSelect: 'none',
+                            MozUserSelect: 'none',
+                            msUserSelect: 'none',
                         }}
                     >
                         <img

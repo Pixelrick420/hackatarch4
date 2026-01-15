@@ -42,6 +42,10 @@ function Workshop({ workshopName, registerLink }: WorkshopProps) {
                         transform: 'translate(-50%, -50%)',
                         animation: 'spin 30s linear infinite',
                         transition: 'all 0.5s ease',
+                        userSelect: 'none',
+                        WebkitUserSelect: 'none',
+                        MozUserSelect: 'none',
+                        msUserSelect: 'none',
                     }}
                 >
                     {trapezoids.map((index) => {

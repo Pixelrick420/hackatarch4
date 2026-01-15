@@ -239,6 +239,11 @@ function CommunityPartners() {
                             width: '100%',
                             height: '100%',
                             clipPath: 'url(#cloudsClipPath)',
+                            pointerEvents: 'none',
+                            userSelect: 'none',
+                            WebkitUserSelect: 'none',
+                            MozUserSelect: 'none',
+                            msUserSelect: 'none',
                         }}
                     >
                         {clouds.map((cloud) => (

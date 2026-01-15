@@ -40,7 +40,7 @@ function ScrollingDivider({
       position: "relative" as const,
       // CRITICAL CHANGE 2: Negative margins allow the divider to physically overlap
       // the components above and below it. Adjust these values based on desired overlap.
-      marginTop: "-4vh",
+      marginTop: "-5vh",
       marginBottom: "-5vh",
       display: "flex",
       justifyContent: "center", // This centers the wide child perfectly

@@ -19,15 +19,17 @@ function Workshop({ workshopName, registerLink }: WorkshopProps) {
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                padding: '2rem',
+                padding: 'clamp(1rem, 3vw, 2rem)',
                 fontFamily: 'Arcade Classic',
+                boxSizing: 'border-box',
             }}
         >
             <div
                 style={{
                     position: 'relative',
-                    width: 'clamp(300px, 80vw, 500px)',
-                    height: 'clamp(300px, 80vw, 500px)',
+                    width: 'clamp(400px, calc(280px + (200vw - 900px) * 0.3), 600px)',
+                    height: 'clamp(400px, calc(280px + (200vw - 900px) * 0.3), 600px)',
+                    aspectRatio: '1',
                 }}
             >
                 <div
@@ -40,6 +42,10 @@ function Workshop({ workshopName, registerLink }: WorkshopProps) {
                         transform: 'translate(-50%, -50%)',
                         animation: 'spin 30s linear infinite',
                         transition: 'all 0.5s ease',
+                        userSelect: 'none',
+                        WebkitUserSelect: 'none',
+                        MozUserSelect: 'none',
+                        msUserSelect: 'none',
                     }}
                 >
                     {trapezoids.map((index) => {
@@ -51,8 +57,8 @@ function Workshop({ workshopName, registerLink }: WorkshopProps) {
                                     position: 'absolute',
                                     top: '50%',
                                     left: '50%',
-                                    width: '15%',
-                                    height: '45%',
+                                    width: '18%',
+                                    height: '70%',
                                     transformOrigin: 'center bottom',
                                     transform: `translate(-50%, -100%) rotate(${angle}deg)`,
                                 }}
@@ -61,8 +67,8 @@ function Workshop({ workshopName, registerLink }: WorkshopProps) {
                                     src="/trapezoid.png"
                                     alt=""
                                     style={{
-                                        width: '10vh',
-                                        height: '10vh',
+                                        width: '100%',
+                                        height: '100%',
                                         objectFit: 'contain',
                                     }}
                                 />
@@ -77,25 +83,27 @@ function Workshop({ workshopName, registerLink }: WorkshopProps) {
                         top: '50%',
                         left: '50%',
                         transform: 'translate(-50%, -50%)',
-                        width: '50%',
-                        height: '30%',
+                        width: '70%',
+                        maxWidth: '300px',
                         display: 'flex',
                         flexDirection: 'column',
                         justifyContent: 'center',
                         alignItems: 'center',
-                        gap: 'clamp(0.5rem, 1.5vw, 1rem)',
-                        backgroundColor: 'rgba(0,0,0,0)',
+                        gap: 'clamp(0.5rem, 2vw, 1rem)',
+                        padding: '1rem',
+                        boxSizing: 'border-box',
                     }}
                 >
                     <div
                         style={{
-                            fontSize: 'clamp(1.5rem, 2vw, 3rem)',
+                            fontSize: 'clamp(1.2rem, 4vw, 2.5rem)',
                             fontWeight: 400,
                             fontFamily: "'Arcade Classic', 'Courier New', monospace",
                             color: 'black',
                             letterSpacing: '0.05em',
                             textAlign: 'center',
-                            marginBottom: 'clamp(0.5rem, 2vw, 1rem)',
+                            lineHeight: '1.2',
+                            wordBreak: 'break-word',
                         }}
                     >
                         {workshopName}
@@ -107,19 +115,19 @@ function Workshop({ workshopName, registerLink }: WorkshopProps) {
                             backgroundColor: '#0A3248',
                             color: 'white',
                             fontFamily: "'Arcade Classic', 'Courier New', monospace",
-                            fontSize: 'clamp(1rem, 4vw, 2rem)',
+                            fontSize: 'clamp(0.9rem, 3vw, 1.5rem)',
                             fontWeight: 400,
-                            padding: '5px 2vh 5px 2vh',
+                            padding: 'clamp(0.4rem, 1.5vw, 0.8rem) clamp(1rem, 3vw, 2rem)',
                             border: '3px solid black',
                             borderRadius: '5px',
                             cursor: 'pointer',
                             boxShadow: '4px 4px 0px #4FD7C0',
-                            transition: 'all 0.5s ease',
-                            marginTop: 'clamp(0.5rem, 2vw, 1rem)',
+                            transition: 'all 0.3s ease',
+                            whiteSpace: 'nowrap',
                         }}
                         onMouseEnter={(e) => {
-                            e.currentTarget.style.boxShadow = '8px 8px 0px #4FD7C0';
-                            e.currentTarget.style.transform = 'scale(1.01)';
+                            e.currentTarget.style.boxShadow = '6px 6px 0px #4FD7C0';
+                            e.currentTarget.style.transform = 'scale(1.05)';
                         }}
                         onMouseLeave={(e) => {
                             e.currentTarget.style.boxShadow = '4px 4px 0px #4FD7C0';
@@ -129,6 +137,19 @@ function Workshop({ workshopName, registerLink }: WorkshopProps) {
                         REGISTER
                     </button>
                 </div>
+
+                <style>
+                    {`
+                        @keyframes spin {
+                            from {
+                                transform: translate(-50%, -50%) rotate(0deg);
+                            }
+                            to {
+                                transform: translate(-50%, -50%) rotate(360deg);
+                            }
+                        }
+                    `}
+                </style>
             </div>
         </div>
     );

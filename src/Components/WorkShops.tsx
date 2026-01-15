@@ -181,8 +181,10 @@ export default function Workshops() {
                             msUserSelect: 'none',
                             position: 'absolute',
                             right: '2vw',
+                            bottom: '20vh',
                             height: '40vh',
                             objectFit: 'contain',
+                            opacity: '0.2',
                         }}
                     >
                         <img src="/workshopimage.png" alt="" />

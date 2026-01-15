@@ -38,16 +38,16 @@ function ScrollingDivider({
     outerWrapper: {
       width: "100%",
       position: "relative" as const,
-      // CRITICAL CHANGE 2: Negative margins allow the divider to physically overlap 
+      // CRITICAL CHANGE 2: Negative margins allow the divider to physically overlap
       // the components above and below it. Adjust these values based on desired overlap.
       marginTop: "-4vh",
-      marginBottom: "-5vh", 
-      display: 'flex',
-      justifyContent: 'center', // This centers the wide child perfectly
-      overflow: 'visible' ,
+      marginBottom: "-5vh",
+      display: "flex",
+      justifyContent: "center", // This centers the wide child perfectly
+      overflow: "visible",
       zIndex: 50, // High Z-Index to sit on top
-      backgroundColor: 'rgba(0,0,0,0)',
-      pointerEvents: 'none' as const, // Allows clicks to pass through to elements behind the transparent parts
+      backgroundColor: "rgba(0,0,0,0)",
+      pointerEvents: "none" as const, // Allows clicks to pass through to elements behind the transparent parts
     },
     rotatedContainer: {
       width: "120vw", // Use VW to ensure it covers width even when rotated
@@ -60,40 +60,51 @@ function ScrollingDivider({
       width: "100%",
       position: "relative" as const,
       // Keep overflow hidden HERE to crop the scrolling text, but not the wrapper
-      overflow: "hidden", 
+      overflow: "hidden",
     },
     dashedBorder: {
       width: "100%",
       height: "1.5vh",
-      backgroundColor: '#F6EDC4',
-      backgroundSize: "30px 2px", 
+      backgroundColor: "#F6EDC4",
+      backgroundSize: "30px 2px",
       backgroundPosition: "0px 0px, 2px 3px",
-      backgroundRepeat: "repeat-x"
+      backgroundRepeat: "repeat-x",
     },
     innerDashedBorder: {
       width: "100%",
       height: "1.5vh",
-      backgroundColor: '#E5AD58',
-      backgroundSize: "30px 2px", 
+      backgroundColor: "#E5AD58",
+      backgroundSize: "30px 2px",
       backgroundPosition: "0px 0px, 2px 3px",
-      backgroundRepeat: "repeat-x"
+      backgroundRepeat: "repeat-x",
     },
-    border1: {outerHeight: "0.5vh", backgroundImage: `
+    border1: {
+      outerHeight: "0.5vh",
+      backgroundImage: `
         linear-gradient(to right, #315971 50%, transparent 50%),
         linear-gradient(to right, rgba(0,0,0,0.2) 50%, transparent 50%)
-      `, },
-    border2: { borderColor: "#E46D45",backgroundImage: `
+      `,
+    },
+    border2: {
+      borderColor: "#E46D45",
+      backgroundImage: `
         linear-gradient(to right, #E46D45 50%, transparent 50%),
         linear-gradient(to right, rgba(0,0,0,0.2) 50%, transparent 50%)
-      `, },
-    border3: { borderColor: "#E46D45",backgroundImage: `
+      `,
+    },
+    border3: {
+      borderColor: "#E46D45",
+      backgroundImage: `
         linear-gradient(to right, #E46D45 50%, transparent 50%),
         linear-gradient(to right, rgba(0,0,0,0.2) 50%, transparent 50%)
-      `, },
-    border4: { backgroundImage: `
+      `,
+    },
+    border4: {
+      backgroundImage: `
         linear-gradient(to right, #EEE4B8 50%, transparent 50%),
         linear-gradient(to right, rgba(0,0,0,0.2) 50%, transparent 50%)
-      `, },
+      `,
+    },
     stripeLayer: { width: "100%" },
     stripeTeal: { backgroundColor: "#ADD1B5", height: "2.5vh" },
     stripeOrange: { backgroundColor: "#E5AD58", height: "1.5vh" },
@@ -114,7 +125,7 @@ function ScrollingDivider({
       willChange: "transform",
     },
     textContent: {
-    //   fontFamily: "'Brains Courage Demo', cursive",
+      //   fontFamily: "'Brains Courage Demo', cursive",
       fontSize: "clamp(2.5rem, 3.5vh, 4rem)",
       color: "#030546",
       letterSpacing: "0.03em",
@@ -125,31 +136,33 @@ function ScrollingDivider({
 
   return (
     <>
-      <style>
-        {`
-          @font-face {
-            font-family: 'Brains Courage Demo';
-            src: url('/fonts/Brainscouragedemo-K7D6D.otf') format('opentype');
-          }        
-        `}
-      </style>
       <div style={styles.outerWrapper}>
         <div style={styles.rotatedContainer}>
           <div style={styles.container}>
             <div style={{ ...styles.dashedBorder, ...styles.border1 }}></div>
             <div style={{ ...styles.stripeLayer, ...styles.stripeTeal }}></div>
-            <div style={{ ...styles.stripeLayer, ...styles.stripeOrange }}></div>
-            <div style={{ ...styles.innerDashedBorder, ...styles.border2 }}></div>
+            <div
+              style={{ ...styles.stripeLayer, ...styles.stripeOrange }}
+            ></div>
+            <div
+              style={{ ...styles.innerDashedBorder, ...styles.border2 }}
+            ></div>
             <div style={styles.scrollingTextArea}>
               <div ref={scrollRef} style={styles.scrollingText}>
                 {/* Render enough copies to fill the screen + buffer */}
                 {[...Array(4)].map((_, i) => (
-                  <span key={i} style={styles.textContent}>{text}</span>
+                  <span key={i} style={styles.textContent}>
+                    {text}
+                  </span>
                 ))}
               </div>
             </div>
-            <div style={{ ...styles.innerDashedBorder, ...styles.border3 }}></div>
-            <div style={{ ...styles.stripeLayer, ...styles.stripeOrange }}></div>
+            <div
+              style={{ ...styles.innerDashedBorder, ...styles.border3 }}
+            ></div>
+            <div
+              style={{ ...styles.stripeLayer, ...styles.stripeOrange }}
+            ></div>
             <div style={{ ...styles.stripeLayer, ...styles.stripeMint }}></div>
             <div style={{ ...styles.stripeLayer, ...styles.stripeNavy }}></div>
             <div style={{ ...styles.dashedBorder, ...styles.border4 }}></div>

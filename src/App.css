@@ -34,3 +34,22 @@ body {
         transform: translate(-50%, -50%) rotate(360deg);
     }
 }
+
+@keyframes noteFloat {
+    0% {
+        transform: scale(0) translateX(0);
+        opacity: 0;
+    }
+    25% {
+        transform: scale(1) translateX(-20vw);
+        opacity: 1;
+    }
+    75% {
+        transform: scale(1) translateX(-40vw);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(-60vw) scale(0);
+        opacity: 0;
+    }
+}

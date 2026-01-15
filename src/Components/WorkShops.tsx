@@ -1,23 +1,119 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Workshop from './WorkShop';
+
+interface MusicNote {
+    id: number;
+    x: number;
+    y: number;
+    speed: number;
+    size: number;
+}
 
 const background = '#F6EDC4';
 
 export default function Workshops() {
     const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+    const [notes, setNotes] = useState<MusicNote[]>([]);
+    const [isInitialLoad, setIsInitialLoad] = useState(true);
+    const nextNoteIdRef = useRef(0);
+    const notesRef = useRef<MusicNote[]>([]);
+    const animationRef = useRef<number | null>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    const MAX_NOTES = 6;
+    const [containerWidth, setContainerWidth] = useState(0);
 
     useEffect(() => {
-        const handleResize = () => setScreenWidth(window.innerWidth);
+        const handleResize = () => {
+            setScreenWidth(window.innerWidth);
+            if (containerRef.current) {
+                setContainerWidth(containerRef.current.offsetWidth);
+            }
+        };
+        handleResize();
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
+    const noteImages = ['/note1.png', '/note2.png', '/note3.png', '/note4.png'];
+
+    useEffect(() => {
+        notesRef.current = notes;
+    }, [notes]);
+
+    useEffect(() => {
+        const spawnNote = () => {
+            setNotes((prev) => {
+                if (prev.length >= MAX_NOTES) {
+                    return prev;
+                }
+
+                const speed = Math.random() * 0.5 + 0.6;
+                const size = (1 / speed) * 30;
+
+                const width = containerWidth || window.innerWidth;
+                const newX = isInitialLoad ? Math.random() * width : width + size;
+                const newY = Math.random() * 80 + 10;
+                const note: MusicNote = {
+                    id: nextNoteIdRef.current,
+                    x: newX,
+                    y: newY,
+                    speed,
+                    size,
+                };
+                nextNoteIdRef.current++;
+                return [...prev, note];
+            });
+        };
+
+        for (let i = 1; i < MAX_NOTES; i++) {
+            setTimeout(spawnNote, i * 10);
+        }
+
+        setTimeout(
+            () => {
+                setIsInitialLoad(false);
+            },
+            MAX_NOTES * 500 + 500
+        );
+
+        const spawnInterval = setInterval(spawnNote, 2000);
+
+        return () => clearInterval(spawnInterval);
+    }, [isInitialLoad, MAX_NOTES, containerWidth]);
+
+    useEffect(() => {
+        const animateNotes = () => {
+            setNotes((prev) =>
+                prev
+                    .map((note) => ({
+                        ...note,
+                        x: note.x - note.speed,
+                    }))
+                    .filter((note) => note.x > -note.size)
+            );
+            animationRef.current = requestAnimationFrame(animateNotes);
+        };
+
+        animationRef.current = requestAnimationFrame(animateNotes);
+
+        return () => {
+            if (animationRef.current) {
+                cancelAnimationFrame(animationRef.current);
+            }
+        };
+    }, [containerWidth]);
+
     return (
         <div
+            ref={containerRef}
             style={{
                 display: 'flex',
                 flexDirection: 'column',
                 backgroundColor: background,
+                position: 'relative',
+                overflow: 'hidden',
+                minHeight: '100vh',
             }}
         >
             <div
@@ -44,6 +140,7 @@ export default function Workshops() {
                     gap: screenWidth < 900 ? '-20vh' : '2vw',
                     position: 'relative',
                     marginBottom: 0,
+                    flex: 1,
                 }}
             >
                 <div
@@ -87,6 +184,33 @@ export default function Workshops() {
                     />
                 )}
             </div>
+            {notes.map((note) => {
+                const noteImage = noteImages[note.id % noteImages.length];
+                return (
+                    <div
+                        key={note.id}
+                        style={{
+                            position: 'absolute',
+                            left: `${note.x}px`,
+                            top: `${note.y}vh`,
+                            width: `${note.size}px`,
+                            height: `${note.size}px`,
+                            zIndex: 1,
+                            pointerEvents: 'none',
+                        }}
+                    >
+                        <img
+                            src={noteImage}
+                            alt="music note"
+                            style={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'contain',
+                            }}
+                        />
+                    </div>
+                );
+            })}
         </div>
     );
 }

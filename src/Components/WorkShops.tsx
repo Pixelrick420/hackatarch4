@@ -20,7 +20,7 @@ export default function Workshops() {
     const animationRef = useRef<number | null>(null);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    const MAX_NOTES = 10;
+    const MAX_NOTES = 8;
     const [containerWidth, setContainerWidth] = useState(0);
 
     useEffect(() => {
@@ -114,7 +114,7 @@ export default function Workshops() {
                 position: 'relative',
                 overflow: 'hidden',
                 height: '70vh',
-                minHeight: '600px',
+                minHeight: screenWidth < 900 ? '1200px' : '600px',
             }}
         >
             <div
@@ -137,7 +137,7 @@ export default function Workshops() {
                     justifyContent: screenWidth >= 1300 ? 'flex-start' : 'space-evenly',
                     height: screenWidth < 900 ? 'auto' : '50vh',
                     backgroundColor: background,
-                    gap: screenWidth < 900 ? '-20vh' : '2vw',
+                    gap: screenWidth < 900 ? 0 : '2vw',
                     position: 'relative',
                     marginBottom: 0,
                     flex: 1,

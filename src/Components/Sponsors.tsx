@@ -90,7 +90,7 @@ const Sponsors: React.FC<SponsorsProps> = ({ cassetteImage = '/casette.png' }) =
                         style={{
                             padding: dashedBorderPadding,
                             paddingTop: isSmallScreen ? 'calc(1.5rem + 10px)' : 'calc(2rem + 15px)',
-                            borderWidth: 'calc(0.6 * 1vw)',
+                            borderWidth: 'min(calc(0.6 * 1vw), calc(0.5 * 1vh))',
                             borderColor: '#005061',
                             borderStyle: isSmallScreen ? 'none' : 'dashed',
                             maxWidth: 'fit-content',

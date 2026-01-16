@@ -20,7 +20,7 @@ export default function Workshops() {
     const animationRef = useRef<number | null>(null);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    const MAX_NOTES = 6;
+    const MAX_NOTES = 10;
     const [containerWidth, setContainerWidth] = useState(0);
 
     useEffect(() => {
@@ -53,7 +53,7 @@ export default function Workshops() {
 
                 const width = containerWidth || window.innerWidth;
                 const newX = isInitialLoad ? Math.random() * width : width + size;
-                const newY = Math.random() * 80 + 10;
+                const newY = Math.random() * 80;
                 const note: MusicNote = {
                     id: nextNoteIdRef.current,
                     x: newX,
@@ -113,7 +113,8 @@ export default function Workshops() {
                 backgroundColor: background,
                 position: 'relative',
                 overflow: 'hidden',
-                minHeight: '100vh',
+                height: '70vh',
+                minHeight: '600px',
             }}
         >
             <div
@@ -123,7 +124,6 @@ export default function Workshops() {
                     paddingTop: '5vh',
                     fontSize: 'clamp(2rem, 4vh, 5vh)',
                     letterSpacing: '0.05em',
-                    marginBottom: '2vh',
                     zIndex: '2',
                 }}
             >
@@ -181,7 +181,7 @@ export default function Workshops() {
                             msUserSelect: 'none',
                             position: 'absolute',
                             right: '2vw',
-                            bottom: '40vh',
+                            bottom: '20vh',
                             height: '40vh',
                             objectFit: 'contain',
                             opacity: '0.6',

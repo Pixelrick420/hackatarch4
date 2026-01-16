@@ -3,17 +3,20 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'American Captain';
+    background-color: '#F6EDC4';
 }
 
 body {
     margin: 0;
     padding: 0;
     overflow-x: hidden;
+    background-color: '#F6EDC4';
 }
 
 #root {
     margin: 0;
     padding: 0;
+    background-color: '#F6EDC4';
 }
 
 @font-face {
@@ -60,5 +63,14 @@ body {
     }
     100% {
         transform: translateX(-50%);
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
     }
 }

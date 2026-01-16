@@ -1,4 +1,5 @@
 import './App.css';
+import About from './Components/About';
 import Clubs from './Components/Clubs';
 import CommunityPartners from './Components/CommunityPartners';
 import ScrollingDivider from './Components/Divider';
@@ -12,6 +13,7 @@ function App() {
         <>
             <Hero />
             <ScrollingDivider />
+            <About />
             <Clubs />
             <Timer />
             <Workshops />

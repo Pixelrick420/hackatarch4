@@ -28,7 +28,10 @@ body {
     font-family: 'Arcade Classic';
     src: url('/arcade_classic_2/ARCADECLASSIC.TTF') format('truetype');
 }
-
+@font-face {
+    font-family: 'Inria Sans';
+    src: url('/inria_sans/InriaSans.ttf') format('truetype');
+}
 @keyframes spin {
     0% {
         transform: translate(-50%, -50%) rotate(0deg);

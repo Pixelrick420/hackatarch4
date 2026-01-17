@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import EventsWindow from './EventWindow';
 
 function Events() {
     const backgroundColor = '#F6EDC4';
@@ -205,37 +206,7 @@ function Events() {
                         <h1 style={{ margin: 0 }}>EVENTS</h1>
                     </div>
                 </div>
-
-                <div
-                    style={{
-                        display: 'grid',
-                        placeItems: 'center',
-                        padding: '0 5vw',
-                    }}
-                >
-                    <div
-                        style={{
-                            width: '100%',
-                            maxWidth: '1200px',
-                            display: 'grid',
-                            placeItems: 'center',
-                        }}
-                    >
-                        <div
-                            style={{
-                                color: '#666',
-                                fontSize: '1.2rem',
-                                textAlign: 'center',
-                                backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                                padding: '2rem',
-                                borderRadius: '1rem',
-                                backdropFilter: 'blur(10px)',
-                            }}
-                        >
-                            Event components will be displayed here
-                        </div>
-                    </div>
-                </div>
+                <EventsWindow />
             </div>
         </div>
     );

@@ -175,7 +175,7 @@ export default function Workshops() {
     const animationRef = useRef<number | null>(null);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    const MAX_NOTES = 8;
+    const MAX_NOTES = 15;
     const [containerWidth, setContainerWidth] = useState(0);
 
     useEffect(() => {

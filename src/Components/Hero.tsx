@@ -19,7 +19,7 @@ function HeroSection() {
     const nextStarIdRef = useRef(0);
     const animationRef = useRef<number | null>(null);
 
-    const MAX_STARS = 15;
+    const MAX_STARS = 5;
     const MAX_STAR_SIZE = 60;
     const STAR_GROWTH_SPEED = 0.02;
 
@@ -319,7 +319,7 @@ function HeroSection() {
                     <nav
                         style={{
                             display: 'flex',
-                            justifyContent: 'center',
+                            justifyContent: 'space-evenly',
                             alignItems: 'center',
                             gap: '15px',
                             padding: '3vh 2vh',

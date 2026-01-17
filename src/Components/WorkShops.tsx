@@ -1,5 +1,160 @@
 import { useEffect, useState, useRef } from 'react';
-import Workshop from './WorkShop';
+
+interface WorkshopProps {
+    workshopName: string;
+    workshopNumber: number;
+    registerLink: string;
+}
+
+function Workshop({ workshopName, registerLink }: WorkshopProps) {
+    const handleRegisterClick = () => {
+        window.open(registerLink, '_blank');
+    };
+
+    const trapezoidCount = 15;
+    const trapezoids = Array.from({ length: trapezoidCount }, (_, i) => i);
+
+    return (
+        <div
+            style={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                padding: 'clamp(0.5rem, 2vw, 2rem)',
+                fontFamily: 'Arcade Classic',
+                boxSizing: 'border-box',
+            }}
+        >
+            <div
+                style={{
+                    position: 'relative',
+                    width: '100%',
+                    maxWidth: '600px',
+                    aspectRatio: '1',
+                }}
+            >
+                <div
+                    style={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        width: '100%',
+                        height: '100%',
+                        transform: 'translate(-50%, -50%)',
+                        animation: 'spin 30s linear infinite',
+                        transition: 'all 0.5s ease',
+                        userSelect: 'none',
+                        WebkitUserSelect: 'none',
+                        MozUserSelect: 'none',
+                        msUserSelect: 'none',
+                    }}
+                >
+                    {trapezoids.map((index) => {
+                        const angle = (360 / trapezoidCount) * index;
+                        return (
+                            <div
+                                key={index}
+                                style={{
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: '50%',
+                                    width: '18%',
+                                    height: '70%',
+                                    transformOrigin: 'center bottom',
+                                    transform: `translate(-50%, -100%) rotate(${angle}deg)`,
+                                }}
+                            >
+                                <img
+                                    src="/trapezoid.png"
+                                    alt=""
+                                    style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        objectFit: 'contain',
+                                    }}
+                                />
+                            </div>
+                        );
+                    })}
+                </div>
+
+                <div
+                    style={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: '70%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        gap: 'clamp(0.3rem, 1.5vw, 1rem)',
+                        padding: 'clamp(0.5rem, 2vw, 1rem)',
+                        boxSizing: 'border-box',
+                    }}
+                >
+                    <div
+                        style={{
+                            fontSize: 'clamp(0.9rem, 3.5vw, 2.5rem)',
+                            fontWeight: 400,
+                            fontFamily: "'Arcade Classic', 'Courier New', monospace",
+                            color: 'black',
+                            letterSpacing: '0.05em',
+                            textAlign: 'center',
+                            lineHeight: '1.2',
+                            wordBreak: 'break-word',
+                        }}
+                    >
+                        {workshopName}
+                    </div>
+
+                    <button
+                        onClick={handleRegisterClick}
+                        style={{
+                            backgroundColor: '#0A3248',
+                            color: 'white',
+                            fontFamily: "'Arcade Classic', 'Courier New', monospace",
+                            fontSize: 'clamp(0.7rem, 2.5vw, 1.5rem)',
+                            fontWeight: 400,
+                            padding: 'clamp(0.3rem, 1.2vw, 0.8rem) clamp(0.8rem, 2.5vw, 2rem)',
+                            border: '3px solid black',
+                            borderRadius: '5px',
+                            cursor: 'pointer',
+                            boxShadow: '4px 4px 0px #4FD7C0',
+                            transition: 'all 0.3s ease',
+                            whiteSpace: 'nowrap',
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.boxShadow = '6px 6px 0px #4FD7C0';
+                            e.currentTarget.style.transform = 'scale(1.05)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.boxShadow = '4px 4px 0px #4FD7C0';
+                            e.currentTarget.style.transform = 'scale(1)';
+                        }}
+                    >
+                        REGISTER
+                    </button>
+                </div>
+
+                <style>
+                    {`
+                        @keyframes spin {
+                            from {
+                                transform: translate(-50%, -50%) rotate(0deg);
+                            }
+                            to {
+                                transform: translate(-50%, -50%) rotate(360deg);
+                            }
+                        }
+                    `}
+                </style>
+            </div>
+        </div>
+    );
+}
 
 interface MusicNote {
     id: number;
@@ -113,8 +268,7 @@ export default function Workshops() {
                 backgroundColor: background,
                 position: 'relative',
                 overflow: 'hidden',
-                height: '70vh',
-                minHeight: screenWidth < 900 ? '1200px' : '600px',
+                height: 'min(800px, 100vw)',
             }}
         >
             <div
@@ -132,12 +286,12 @@ export default function Workshops() {
             <div
                 style={{
                     display: 'flex',
-                    flexDirection: screenWidth < 900 ? 'column' : 'row',
+                    flexDirection: 'row',
                     alignItems: 'center',
-                    justifyContent: screenWidth >= 1300 ? 'flex-start' : 'space-evenly',
+                    justifyContent: screenWidth >= 1600 ? 'flex-start' : 'space-evenly',
                     height: screenWidth < 900 ? 'auto' : '50vh',
                     backgroundColor: background,
-                    gap: screenWidth < 900 ? 0 : '2vw',
+                    gap: 0,
                     position: 'relative',
                     marginBottom: 0,
                     flex: 1,
@@ -145,10 +299,10 @@ export default function Workshops() {
             >
                 <div
                     style={{
-                        width: '30vw',
-                        minWidth: '40vh',
+                        flex: '1 1 0',
+                        maxWidth: '600px',
                         backgroundColor: background,
-                        marginLeft: screenWidth >= 1300 ? '5vw' : '0',
+                        marginLeft: screenWidth >= 1600 ? '3vw' : '0',
                     }}
                 >
                     <Workshop
@@ -159,10 +313,10 @@ export default function Workshops() {
                 </div>
                 <div
                     style={{
-                        width: '30vw',
-                        minWidth: '40vh',
+                        flex: '1 1 0',
+                        maxWidth: '600px',
                         backgroundColor: background,
-                        marginLeft: screenWidth >= 1300 ? '5vw' : '0',
+                        marginLeft: screenWidth >= 1600 ? '3vw' : '0',
                     }}
                 >
                     <Workshop
@@ -171,7 +325,7 @@ export default function Workshops() {
                         registerLink="https://example.com/register"
                     />
                 </div>
-                {screenWidth >= 1300 && (
+                {screenWidth >= 1600 && (
                     <div
                         style={{
                             pointerEvents: 'none',
@@ -181,8 +335,8 @@ export default function Workshops() {
                             msUserSelect: 'none',
                             position: 'absolute',
                             right: '2vw',
-                            bottom: '20vh',
-                            height: '40vh',
+                            bottom: '40%',
+                            height: 'min(400px, 100vw)',
                             objectFit: 'contain',
                             opacity: '0.6',
                         }}
@@ -257,6 +411,19 @@ export default function Workshops() {
                     </div>
                 );
             })}
+
+            <style>
+                {`
+                    @keyframes scrollRight {
+                        0% {
+                            transform: translateX(0);
+                        }
+                        100% {
+                            transform: translateX(-50%);
+                        }
+                    }
+                `}
+            </style>
         </div>
     );
 }

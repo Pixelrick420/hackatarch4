@@ -4,7 +4,7 @@ interface WorkshopProps {
     registerLink: string;
 }
 
-function Workshop({ workshopName, registerLink }: WorkshopProps) {
+export default function Workshop({ workshopName, registerLink }: WorkshopProps) {
     const handleRegisterClick = () => {
         window.open(registerLink, '_blank');
     };
@@ -19,7 +19,7 @@ function Workshop({ workshopName, registerLink }: WorkshopProps) {
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                padding: 'clamp(1rem, 3vw, 2rem)',
+                padding: 'clamp(0.5rem, 2vw, 2rem)',
                 fontFamily: 'Arcade Classic',
                 boxSizing: 'border-box',
             }}
@@ -27,8 +27,8 @@ function Workshop({ workshopName, registerLink }: WorkshopProps) {
             <div
                 style={{
                     position: 'relative',
-                    width: 'clamp(400px, calc(280px + (200vw - 900px) * 0.3), 600px)',
-                    height: 'clamp(400px, calc(280px + (200vw - 900px) * 0.3), 600px)',
+                    width: '100%',
+                    maxWidth: '600px',
                     aspectRatio: '1',
                 }}
             >
@@ -84,19 +84,18 @@ function Workshop({ workshopName, registerLink }: WorkshopProps) {
                         left: '50%',
                         transform: 'translate(-50%, -50%)',
                         width: '70%',
-                        maxWidth: '300px',
                         display: 'flex',
                         flexDirection: 'column',
                         justifyContent: 'center',
                         alignItems: 'center',
-                        gap: 'clamp(0.5rem, 2vw, 1rem)',
-                        padding: '1rem',
+                        gap: 'clamp(0.3rem, 1.5vw, 1rem)',
+                        padding: 'clamp(0.5rem, 2vw, 1rem)',
                         boxSizing: 'border-box',
                     }}
                 >
                     <div
                         style={{
-                            fontSize: 'clamp(1.2rem, 4vw, 2.5rem)',
+                            fontSize: 'clamp(0.9rem, 3.5vw, 2.5rem)',
                             fontWeight: 400,
                             fontFamily: "'Arcade Classic', 'Courier New', monospace",
                             color: 'black',
@@ -115,9 +114,9 @@ function Workshop({ workshopName, registerLink }: WorkshopProps) {
                             backgroundColor: '#0A3248',
                             color: 'white',
                             fontFamily: "'Arcade Classic', 'Courier New', monospace",
-                            fontSize: 'clamp(0.9rem, 3vw, 1.5rem)',
+                            fontSize: 'clamp(0.7rem, 2.5vw, 1.5rem)',
                             fontWeight: 400,
-                            padding: 'clamp(0.4rem, 1.5vw, 0.8rem) clamp(1rem, 3vw, 2rem)',
+                            padding: 'clamp(0.3rem, 1.2vw, 0.8rem) clamp(0.8rem, 2.5vw, 2rem)',
                             border: '3px solid black',
                             borderRadius: '5px',
                             cursor: 'pointer',
@@ -154,5 +153,3 @@ function Workshop({ workshopName, registerLink }: WorkshopProps) {
         </div>
     );
 }
-
-export default Workshop;

@@ -82,7 +82,6 @@ const Sponsors: React.FC<SponsorsProps> = ({ cassetteImage = '/casette.png' }) =
                         style={{
                             fontWeight: 'bold',
                             textAlign: 'left',
-                            color: '#000000',
                             textTransform: 'uppercase',
                             backgroundColor: '#F6EDC4',
                             fontFamily: "'American' Captain",
@@ -95,6 +94,7 @@ const Sponsors: React.FC<SponsorsProps> = ({ cassetteImage = '/casette.png' }) =
                             zIndex: 2,
                             whiteSpace: 'nowrap',
                             lineHeight: 1,
+                            color: '#0A3248',
                         }}
                     >
                         SPONSORS
@@ -124,7 +124,7 @@ const Sponsors: React.FC<SponsorsProps> = ({ cassetteImage = '/casette.png' }) =
                                 style={{
                                     fontWeight: 'bold',
                                     textAlign: 'center',
-                                    color: '#000000',
+                                    color: '#0A3248',
                                     textTransform: 'uppercase',
                                     backgroundColor: '#F6EDC4',
                                     fontFamily: "'American' Captain",

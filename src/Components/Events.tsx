@@ -7,7 +7,6 @@ function Events() {
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const [windowHeight, setWindowHeight] = useState(window.innerHeight);
 
-    // Dot grid configuration
     const DOT_SIZE = 6;
     const DOT_SPACING = 40;
 
@@ -21,12 +20,10 @@ function Events() {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    // Calculate grid dimensions
     const gridConfig = useMemo(() => {
         const cols = Math.ceil(windowWidth / DOT_SPACING);
         const rows = Math.ceil(windowHeight / DOT_SPACING);
 
-        // Calculate starting offset (30% from top-left)
         const startCol = Math.floor(cols * 0.3);
         const startRow = Math.floor(rows * 0.3);
 
@@ -47,7 +44,6 @@ function Events() {
                 overflow: 'hidden',
             }}
         >
-            {/* Background dots grid using CSS Grid */}
             <div
                 style={{
                     position: 'absolute',
@@ -81,7 +77,41 @@ function Events() {
                 ))}
             </div>
 
-            {/* Stars positioned using CSS Grid */}
+            <div
+                style={{
+                    position: 'relative',
+                    width: '100vw',
+                    overflow: 'hidden',
+                    userSelect: 'none',
+                    WebkitUserSelect: 'none',
+                    MozUserSelect: 'none',
+                    msUserSelect: 'none',
+                }}
+            >
+                <div
+                    style={{
+                        display: 'grid',
+                        gridAutoFlow: 'column',
+                        gridAutoColumns: 'minmax(2vh, 1fr)',
+                        width: '200%',
+                        animation: 'scrollLeft 40s infinite linear',
+                        transform: 'translateX(0)',
+                    }}
+                >
+                    {Array.from({ length: Math.ceil(windowWidth / 25) * 2 }).map((_, i) => (
+                        <img
+                            key={i}
+                            src="/x.png"
+                            alt=""
+                            style={{
+                                width: '2vh',
+                                height: 'auto',
+                                objectFit: 'contain',
+                            }}
+                        />
+                    ))}
+                </div>
+            </div>
             <div
                 style={{
                     position: 'absolute',
@@ -96,7 +126,6 @@ function Events() {
                     gridTemplateRows: 'auto 1fr',
                 }}
             >
-                {/* Top Right Star */}
                 <div
                     style={{
                         gridColumn: '2 / 3',
@@ -121,7 +150,6 @@ function Events() {
                     />
                 </div>
 
-                {/* Bottom Left Star */}
                 <div
                     style={{
                         gridColumn: '1 / 2',
@@ -148,7 +176,6 @@ function Events() {
                 </div>
             </div>
 
-            {/* Main content using CSS Grid */}
             <div
                 style={{
                     display: 'grid',
@@ -158,7 +185,6 @@ function Events() {
                     minHeight: '100vh',
                 }}
             >
-                {/* Heading - Top Center */}
                 <div
                     style={{
                         display: 'grid',
@@ -173,14 +199,13 @@ function Events() {
                             fontSize: 'clamp(2rem, 6vw, 5rem)',
                             letterSpacing: '0.05em',
                             textAlign: 'center',
-                            color: '#000',
+                            color: '#0A3248',
                         }}
                     >
                         <h1 style={{ margin: 0 }}>EVENTS</h1>
                     </div>
                 </div>
 
-                {/* Content Area */}
                 <div
                     style={{
                         display: 'grid',
@@ -188,7 +213,6 @@ function Events() {
                         padding: '0 5vw',
                     }}
                 >
-                    {/* Placeholder for future event components */}
                     <div
                         style={{
                             width: '100%',

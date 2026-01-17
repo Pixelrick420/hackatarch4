@@ -288,6 +288,7 @@ function CommunityPartners() {
                                 fontSize: 'clamp(2rem, 4vh, 5vh)',
                                 letterSpacing: '0.05em',
                                 marginBottom: '3vh',
+                                color: '#0A3248',
                             }}
                         >
                             <h1 style={{ margin: 0 }}>COMMUNITY PARTNERS</h1>

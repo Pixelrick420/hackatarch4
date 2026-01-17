@@ -279,6 +279,7 @@ export default function Workshops() {
                     fontSize: 'clamp(2rem, 4vh, 5vh)',
                     letterSpacing: '0.05em',
                     zIndex: '2',
+                    color: '#0A3248',
                 }}
             >
                 <h1 style={{ margin: 0 }}>WORKSHOPS</h1>

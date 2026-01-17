@@ -404,5 +404,4 @@ const FluidCursor = memo(
 );
 
 FluidCursor.displayName = 'FluidCursor';
-
 export default FluidCursor;

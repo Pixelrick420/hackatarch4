@@ -11,7 +11,7 @@ import Workshops from './Components/WorkShops';
 function App() {
     return (
         <>
-            <FluidCursor color="#3AAE95" opacity={0.2}>
+            <FluidCursor>
                 <Hero />
                 <ScrollingDivider />
                 <About />

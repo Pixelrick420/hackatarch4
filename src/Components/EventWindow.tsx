@@ -202,7 +202,7 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
                     }}
                 >
                     <img
-                        src="leftarrow.png"
+                        src="left.png"
                         alt="left"
                         style={{
                             width: '40px',
@@ -212,7 +212,7 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
                         }}
                     />
                     <img
-                        src="rightarrow.png"
+                        src="right.png"
                         alt="right"
                         style={{
                             width: '40px',

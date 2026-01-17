@@ -6,7 +6,6 @@ import Events from './Components/Events';
 import Hero from './Components/Hero';
 // import FluidCursor from './Components/Mouse';
 import Sponsors from './Components/Sponsors';
-// import Timer from './Components/Timer';
 import Workshops from './Components/WorkShops';
 
 function App() {

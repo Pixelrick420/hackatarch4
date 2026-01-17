@@ -112,7 +112,6 @@ function About() {
                     paddingTop: '20vh',
                 }}>
           </div> */}
-
                 <svg
                     style={{
                         position: 'absolute',

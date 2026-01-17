@@ -19,7 +19,7 @@ function HeroSection() {
     const nextStarIdRef = useRef(0);
     const animationRef = useRef<number | null>(null);
 
-    const MAX_STARS = 5;
+    const MAX_STARS = 2;
     const MAX_STAR_SIZE = 60;
     const STAR_GROWTH_SPEED = 0.02;
 
@@ -31,7 +31,7 @@ function HeroSection() {
         { name: 'Contact Us', url: '#' },
     ];
 
-    const starImages = ['/star1.png', '/star2.png', '/star3.png'];
+    const starImages = ['/star3.png'];
 
     useEffect(() => {
         const handleResize = () => {

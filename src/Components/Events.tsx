@@ -9,7 +9,7 @@ function Events() {
 
     // Dot grid configuration
     const DOT_SIZE = 6;
-    const DOT_SPACING = 50;
+    const DOT_SPACING = 40;
 
     useEffect(() => {
         const handleResize = () => {

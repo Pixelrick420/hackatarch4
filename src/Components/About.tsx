@@ -3,7 +3,7 @@ import { useEffect, useState, useMemo, useRef } from "react";
 function About() {
   // Colors extracted from your CSS dump and image analysis
   const colors = {
-    background: "#F8EDCD", // [cite: 57]
+    background: "#F6EDC4", // [cite: 57]
     polygon: "#0A3248",
     //
     textDark: "#0A3248", // [cite: 4]

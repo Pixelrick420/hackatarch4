@@ -269,6 +269,11 @@ function About() {
               <button
                 onMouseEnter={() => setIsHovering(true)}
                 onMouseLeave={() => setIsHovering(false)}
+                onClick={() =>
+                  document
+                    .getElementById("events")
+                    ?.scrollIntoView({ behavior: "smooth" })
+                }
                 style={{
                   backgroundColor: COLORS.green,
                   border: "3px solid black",

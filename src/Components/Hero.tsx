@@ -1,14 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Game from "./Game";
 import DateCalendar from "./Datecalendar";
-
-interface Star {
-  id: number;
-  x: number;
-  y: number;
-  image: string;
-  phase: number;
-}
 
 const C = {
   bg: "#F6EDC4",
@@ -49,34 +41,12 @@ if (typeof document !== "undefined" && !document.getElementById(STYLE_ID)) {
 function HeroSection({ ready = false }: { ready?: boolean }) {
   const [isGameOpen, setIsGameOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1000);
-  const [stars, setStars] = useState<Star[]>([]);
-  const animationRef = useRef<number | null>(null);
-  const MAX_STAR_SIZE = 60;
-  const STAR_GROWTH_SPD = 0.02;
 
   useEffect(() => {
     const onResize = () => setIsMobile(window.innerWidth < 1000);
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
   }, []);
-
-  useEffect(() => {
-    const animate = () => {
-      setStars((prev) =>
-        prev
-          .map((s) => ({ ...s, phase: s.phase + STAR_GROWTH_SPD }))
-          .filter((s) => s.phase < 2),
-      );
-      animationRef.current = requestAnimationFrame(animate);
-    };
-    animationRef.current = requestAnimationFrame(animate);
-    return () => {
-      if (animationRef.current) cancelAnimationFrame(animationRef.current);
-    };
-  }, []);
-
-  const starSize = (phase: number) =>
-    phase < 1 ? phase * MAX_STAR_SIZE : (2 - phase) * MAX_STAR_SIZE;
 
   const anim = (
     name: string,
@@ -192,15 +162,14 @@ function HeroSection({ ready = false }: { ready?: boolean }) {
       {/* ── Mobile: tangent lines from left edge to top edge ── */}
       {isMobile &&
         (() => {
-          const TANGENT_LINE_COUNT = 100;
-
-          const CX = 0;
-          const CY = 0;
-          const R = 50;
+          const TANGENT_LINE_COUNT = 20;
+          const CX = 50;
+          const CY = 25;
+          const R = 30;
 
           const lines = [];
           for (let i = 0; i < TANGENT_LINE_COUNT; i++) {
-            const angle = 10 + (i / (TANGENT_LINE_COUNT - 1)) * 70;
+            const angle = 150 + (i / (TANGENT_LINE_COUNT - 1)) * 70;
             const rad = (angle * Math.PI) / 180;
 
             const tx = CX + R * Math.cos(rad);
@@ -252,8 +221,8 @@ function HeroSection({ ready = false }: { ready?: boolean }) {
                   y1={l.y1}
                   x2={l.x2}
                   y2={l.y2}
-                  stroke={C.amber}
-                  strokeWidth="0.4"
+                  stroke={C.tealDark}
+                  strokeWidth="0.6"
                   vectorEffect="non-scaling-stroke"
                 />
               ))}
@@ -302,40 +271,6 @@ function HeroSection({ ready = false }: { ready?: boolean }) {
           }}
         />
       ))}
-
-      {/* Stars */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          pointerEvents: "none",
-          zIndex: 2,
-        }}
-      >
-        {stars.map((star) => {
-          const sz = starSize(star.phase);
-          return (
-            <img
-              key={star.id}
-              src={star.image}
-              alt=""
-              style={{
-                position: "absolute",
-                left: `${star.x}%`,
-                top: `${star.y}%`,
-                width: sz,
-                height: sz,
-                objectFit: "contain",
-                transform: "translate(-50%, -50%)",
-                opacity: star.phase < 1 ? star.phase : 2 - star.phase,
-              }}
-              onError={(e) => {
-                (e.target as HTMLImageElement).style.display = "none";
-              }}
-            />
-          );
-        })}
-      </div>
 
       {/* Content */}
       <div

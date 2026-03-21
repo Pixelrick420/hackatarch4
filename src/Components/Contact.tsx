@@ -461,7 +461,7 @@ function PhoneLink({ phone, isMobile }: { phone: string; isMobile: boolean }) {
         color: "#333",
         fontWeight: "700",
         textDecoration: "none",
-        backgroundColor: hovered ? "#E5AD58" : "#F5E6C8",
+        backgroundColor: hovered ? "#E5AD58" : "#F6EDC4",
         border: "1.5px solid black",
         borderRadius: "1.5vh",
         padding: "0.5vh 1.2vw",

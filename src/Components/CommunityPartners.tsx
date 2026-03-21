@@ -93,17 +93,20 @@ function CommunityPartners() {
   ];
   const socialLinks = [
     {
+      name: "linkedin",
+      icon: "/linkedin.png",
+      url: "https://www.linkedin.com/in/hack-at-arch-4a7b26238/",
+    },
+    {
       name: "instagram",
       icon: "/instagram.png",
       url: "https://www.instagram.com/hack_at_arch/",
     },
     {
-      name: "linkedin",
-      icon: "/linkedin.png",
-      url: "https://www.linkedin.com/in/hack-at-arch-4a7b26238/",
+      name: "unstop",
+      icon: "/unstop.png",
+      url: "https://unstop.com/college-fests/hack-at-arch-40-government-engineering-college-gec-thrissur-452159",
     },
-    { name: "youtube", icon: "/youtube.png", url: "#" },
-    { name: "telegram", icon: "/telegram.png", url: "#" },
   ];
 
   useEffect(() => {

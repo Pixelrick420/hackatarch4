@@ -146,7 +146,7 @@ function HeroSection({ ready = false }: { ready?: boolean }) {
           <div
             style={{
               position: "absolute",
-              top: "calc(38% + 8px)",
+              top: "calc(38%)",
               right: 0,
               width: "36vw",
               height: "1.5px",
@@ -350,7 +350,8 @@ function HeroSection({ ready = false }: { ready?: boolean }) {
                 fontSize: "clamp(3rem, 7vw, 8rem)",
                 color: C.navy,
                 margin: 0,
-                lineHeight: 0.9,
+                marginTop: "5vh",
+                lineHeight: 0.8,
                 letterSpacing: "0.02em",
                 ...anim("heroFadeLeft", 0.45, 0.8),
               }}

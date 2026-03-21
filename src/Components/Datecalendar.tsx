@@ -292,7 +292,7 @@ function DateCalendar({ embedded = false }: DateCalendarProps) {
                 : "clamp(0.9rem, 2.2vw, 1.4rem)",
               opacity: 0.5,
               letterSpacing: "0.32em",
-              marginBottom: "0.3vh",
+              marginBottom: "1vh",
             }}
           >
             {pageData.month}
@@ -306,6 +306,7 @@ function DateCalendar({ embedded = false }: DateCalendarProps) {
               fontWeight: "bold",
               lineHeight: 0.85,
               marginBottom: "0.6vh",
+              marginTop: "1vh",
               textShadow:
                 "2px 2px 0 rgba(0,0,0,0.07), -1px -1px 0 rgba(255,255,255,0.35)",
               color: "#0a2e40",

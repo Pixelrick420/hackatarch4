@@ -147,9 +147,10 @@ const Sponsors: React.FC<SponsorsProps> = ({
               borderWidth: "min(calc(0.6 * 1vw), calc(0.5 * 1vh))",
               borderColor: "#005061",
               borderStyle: isSmallScreen ? "none" : "dashed",
-              maxWidth: "fit-content",
+              maxWidth: isSmallScreen ? "95%" : "fit-content",
               position: "relative",
-              width: "100%",
+              width: isSmallScreen ? "95%" : "100%",
+              boxSizing: "border-box",
               ...a("spScale", 0.1),
             }}
           >
@@ -180,7 +181,7 @@ const Sponsors: React.FC<SponsorsProps> = ({
             )}
             <div
               style={{
-                padding: isSmallScreen ? "20px 10px" : "40px 20px",
+                padding: isSmallScreen ? "16px 8px" : "40px 20px",
                 background: "#005061",
                 backgroundImage: `url('/filter.png')`,
                 backgroundSize: "contain",
@@ -189,6 +190,8 @@ const Sponsors: React.FC<SponsorsProps> = ({
                 gap: showCassette ? "40px" : "20px",
                 alignItems: "center",
                 maxWidth: "1200px",
+                width: "100%",
+                boxSizing: "border-box",
                 marginTop: isSmallScreen ? "2vh" : 0,
                 borderRadius: "1vh",
               }}
@@ -217,7 +220,8 @@ const Sponsors: React.FC<SponsorsProps> = ({
                   maxWidth: screenWidth < 700 ? "100%" : "500px",
                   margin: "0 auto",
                   width: "100%",
-                  padding: isSmallScreen ? "10px" : "30px",
+                  boxSizing: "border-box",
+                  padding: isSmallScreen ? "6px" : "30px",
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
@@ -230,14 +234,12 @@ const Sponsors: React.FC<SponsorsProps> = ({
                     background: "#F6EDC4",
                     border: `${screenWidth < 700 ? "4px" : "8px"} solid #5793A1CC`,
                     borderRadius: screenWidth < 700 ? "8px" : "12px",
-                    padding: "clamp(10px, 3vw, 30px)",
-                    minHeight:
-                      screenWidth < 700
-                        ? "clamp(200px, 40vw, 300px)"
-                        : "clamp(150px, 25vw, 250px)",
-                    minWidth: "300px",
+                    padding: "clamp(8px, 3vw, 30px)",
+                    minHeight: "clamp(160px, 40vw, 300px)",
+                    minWidth: 0,
                     width: "100%",
-                    aspectRatio: screenWidth < 700 ? "1" : "auto",
+                    boxSizing: "border-box",
+                    aspectRatio: "1",
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
@@ -274,9 +276,10 @@ const Sponsors: React.FC<SponsorsProps> = ({
                   style={{
                     display: "flex",
                     gap: screenWidth < 700 ? "6px" : "10px",
-                    marginTop: screenWidth < 700 ? "16px" : "24px",
+                    marginTop: screenWidth < 700 ? "12px" : "24px",
                     marginBottom: 0,
                     width: "100%",
+                    boxSizing: "border-box",
                   }}
                 >
                   <button
@@ -288,10 +291,11 @@ const Sponsors: React.FC<SponsorsProps> = ({
                       borderRadius: screenWidth < 700 ? "6px" : "8px",
                       padding:
                         screenWidth < 700
-                          ? "clamp(8px, 2vw, 12px)"
+                          ? "clamp(6px, 2vw, 12px)"
                           : "clamp(15px, 3vw, 25px)",
                       cursor: "pointer",
                       transition: "background 0.3s ease",
+                      minWidth: 0,
                     }}
                     onMouseEnter={(e) =>
                       (e.currentTarget.style.background = "#2A7FA9")
@@ -308,6 +312,8 @@ const Sponsors: React.FC<SponsorsProps> = ({
                         width: "100%",
                         height: "auto",
                         maxWidth: screenWidth < 700 ? "40px" : "60px",
+                        display: "block",
+                        margin: "0 auto",
                       }}
                     />
                   </button>
@@ -320,10 +326,11 @@ const Sponsors: React.FC<SponsorsProps> = ({
                       borderRadius: screenWidth < 700 ? "6px" : "8px",
                       padding:
                         screenWidth < 700
-                          ? "clamp(8px, 2vw, 12px)"
+                          ? "clamp(6px, 2vw, 12px)"
                           : "clamp(15px, 3vw, 25px)",
                       cursor: "pointer",
                       transition: "background 0.3s ease",
+                      minWidth: 0,
                     }}
                     onMouseEnter={(e) =>
                       (e.currentTarget.style.background = "#2A7FA9")
@@ -342,6 +349,8 @@ const Sponsors: React.FC<SponsorsProps> = ({
                         width: "100%",
                         height: "auto",
                         maxWidth: screenWidth < 700 ? "40px" : "60px",
+                        display: "block",
+                        margin: "0 auto",
                       }}
                     />
                   </button>
@@ -354,10 +363,11 @@ const Sponsors: React.FC<SponsorsProps> = ({
                       borderRadius: screenWidth < 700 ? "6px" : "8px",
                       padding:
                         screenWidth < 700
-                          ? "clamp(8px, 2vw, 12px)"
+                          ? "clamp(6px, 2vw, 12px)"
                           : "clamp(15px, 3vw, 25px)",
                       cursor: "pointer",
                       transition: "background 0.3s ease",
+                      minWidth: 0,
                     }}
                     onMouseEnter={(e) =>
                       (e.currentTarget.style.background = "#2A7FA9")
@@ -374,6 +384,8 @@ const Sponsors: React.FC<SponsorsProps> = ({
                         width: "100%",
                         height: "auto",
                         maxWidth: screenWidth < 700 ? "40px" : "60px",
+                        display: "block",
+                        margin: "0 auto",
                       }}
                     />
                   </button>

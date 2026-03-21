@@ -1,5 +1,17 @@
 import { useEffect, useState, useMemo, useRef } from "react";
 
+const KF = "cp-kf";
+if (typeof document !== "undefined" && !document.getElementById(KF)) {
+  const s = document.createElement("style");
+  s.id = KF;
+  s.textContent = `
+    @keyframes cpUp    { from{opacity:0;transform:translateY(32px)} to{opacity:1;transform:none} }
+    @keyframes cpScale { from{opacity:0;transform:scale(0.88)}      to{opacity:1;transform:none} }
+    @keyframes cpPop   { from{opacity:0;transform:translateY(16px) scale(0.9)} to{opacity:1;transform:none} }
+  `;
+  document.head.appendChild(s);
+}
+
 interface Cloud {
   id: number;
   x: number;
@@ -16,25 +28,38 @@ function CommunityPartners() {
   const [currentLogoIndex, setCurrentLogoIndex] = useState(0);
   const [clouds, setClouds] = useState<Cloud[]>([]);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [visible, setVisible] = useState(false);
   const nextCloudIdRef = useRef(0);
   const cloudsRef = useRef<Cloud[]>([]);
   const animationRef = useRef<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  const MAX_CLOUDS = 6;
+  const MAX_CLOUDS = 10;
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [containerWidth, setContainerWidth] = useState(0);
 
   useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
-      if (containerRef.current) {
+      if (containerRef.current)
         setContainerWidth(containerRef.current.offsetWidth);
-      }
     };
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          setVisible(true);
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.5 },
+    );
+    if (containerRef.current) obs.observe(containerRef.current);
+    return () => obs.disconnect();
   }, []);
 
   const nonagonPoints = useMemo(() => {
@@ -50,16 +75,14 @@ function CommunityPartners() {
       [-0.3347033205136639, 0.2955381835724315],
       [-0.2894818203498206, -0.1347156501530601],
     ];
-
     const aspectRatio = windowWidth / window.innerHeight;
     const compensationFactor = aspectRatio < 1 ? 1 / aspectRatio : 1;
-
-    const adjustedPoints = basePoints.map(([x, y]) => {
-      const adjustedX = x * compensationFactor;
-      return `${adjustedX},${y}`;
-    });
-
-    return adjustedPoints.join(" ");
+    return basePoints
+      .map(([x, y]) => {
+        const adjustedX = x * compensationFactor;
+        return `${adjustedX},${y}`;
+      })
+      .join(" ");
   }, [windowWidth]);
 
   const communityLogos = [
@@ -68,7 +91,6 @@ function CommunityPartners() {
     "/community3.png",
     "/community4.png",
   ];
-
   const socialLinks = [
     {
       name: "instagram",
@@ -88,7 +110,6 @@ function CommunityPartners() {
     const interval = setInterval(() => {
       setCurrentLogoIndex((prev) => (prev + 1) % communityLogos.length);
     }, 3000);
-
     return () => clearInterval(interval);
   }, [communityLogos.length]);
 
@@ -99,17 +120,12 @@ function CommunityPartners() {
   useEffect(() => {
     const spawnCloud = () => {
       setClouds((prev) => {
-        if (prev.length >= MAX_CLOUDS) {
-          return prev;
-        }
-
+        if (prev.length >= MAX_CLOUDS) return prev;
         const speed = Math.random() * 0.5 + 0.6;
         const size = (1 / speed) * 200 + 200;
-
         const width = containerWidth || window.innerWidth;
         const newX = isInitialLoad ? Math.random() * width : -size;
-        const newY = Math.random() * 40;
-
+        const newY = Math.random() * 90;
         const cloud: Cloud = {
           id: nextCloudIdRef.current,
           x: newX,
@@ -121,20 +137,14 @@ function CommunityPartners() {
         return [...prev, cloud];
       });
     };
-
-    for (let i = 1; i < MAX_CLOUDS; i++) {
-      setTimeout(spawnCloud, i * 10);
-    }
-
+    for (let i = 1; i < MAX_CLOUDS; i++) setTimeout(spawnCloud, i * 10);
     setTimeout(
       () => {
         setIsInitialLoad(false);
       },
       MAX_CLOUDS * 500 + 500,
     );
-
     const spawnInterval = setInterval(spawnCloud, 3000);
-
     return () => clearInterval(spawnInterval);
   }, [isInitialLoad, MAX_CLOUDS, containerWidth]);
 
@@ -143,35 +153,35 @@ function CommunityPartners() {
       const width = containerWidth || window.innerWidth;
       setClouds((prev) =>
         prev
-          .map((cloud) => ({
-            ...cloud,
-            x: cloud.x + cloud.speed,
-          }))
+          .map((cloud) => ({ ...cloud, x: cloud.x + cloud.speed }))
           .filter((cloud) => cloud.x < width + cloud.size),
       );
       animationRef.current = requestAnimationFrame(animateClouds);
     };
-
     animationRef.current = requestAnimationFrame(animateClouds);
-
     return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
     };
   }, [containerWidth]);
+
+  const a = (name: string, delay: number): React.CSSProperties =>
+    visible
+      ? {
+          animation: `${name} 0.75s cubic-bezier(0.22,1,0.36,1) ${delay}s both`,
+        }
+      : { opacity: 0 };
 
   return (
     <>
       <div
         ref={containerRef}
         style={{
+          overflow: "hidden",
           width: "100%",
           minHeight: "100vh",
           margin: 0,
           padding: 0,
           position: "relative",
-          overflowX: "hidden",
         }}
       >
         <svg
@@ -202,11 +212,9 @@ function CommunityPartners() {
                 fill={footerHighlight}
               />
             </pattern>
-
             <clipPath id="nonagonClip">
               <polygon points={nonagonPoints} />
             </clipPath>
-
             <mask id="nonagonMask">
               <rect x="-1" y="-1" width="3" height="3" fill="white" />
               <polygon points={nonagonPoints} fill="black" />
@@ -284,11 +292,12 @@ function CommunityPartners() {
               style={{
                 fontFamily: "'American' Captain",
                 paddingLeft: "3vw",
-                paddingTop: "5vh",
+                marginTop: "6vh",
+                marginBottom: 0,
                 fontSize: "clamp(2rem, 4vh, 5vh)",
                 letterSpacing: "0.05em",
-                marginBottom: "3vh",
                 color: "#0A3248",
+                ...a("cpUp", 0.05),
               }}
             >
               <h1 style={{ margin: 0 }}>COMMUNITY PARTNERS</h1>
@@ -312,6 +321,7 @@ function CommunityPartners() {
                   justifyContent: "center",
                   alignItems: "center",
                   padding: "2vh",
+                  ...a("cpScale", 0.2),
                 }}
               >
                 <img
@@ -335,24 +345,26 @@ function CommunityPartners() {
 
           <div
             style={{
-              marginTop: "20vh",
-              paddingTop: "8vh",
-              paddingBottom: "4vh",
+              overflowX: "hidden",
+              overflowY: "hidden",
+              marginTop: 0,
+              paddingTop: "2vh",
+              marginBottom: "2vh",
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
-              gap: "3vh",
+              gap: "2vh",
             }}
           >
             <div
               style={{
                 display: "flex",
                 justifyContent: "center",
-                gap: "4vw",
+                gap: "2vw",
                 flexWrap: "wrap",
                 padding: "0 2vw",
               }}
-            ></div>
+            />
             <div
               style={{
                 display: "flex",
@@ -362,7 +374,7 @@ function CommunityPartners() {
                 alignItems: "center",
               }}
             >
-              {socialLinks.map((social) => (
+              {socialLinks.map((social, i) => (
                 <a
                   key={social.name}
                   href={social.url}
@@ -380,6 +392,7 @@ function CommunityPartners() {
                     padding: 0,
                     margin: 0,
                     flexShrink: 0,
+                    ...a("cpPop", 0.4 + i * 0.08),
                   }}
                   onMouseEnter={(e) =>
                     (e.currentTarget.style.transform = "scale(1.1)")
@@ -398,7 +411,6 @@ function CommunityPartners() {
                       display: "block",
                     }}
                     onError={(e) => {
-                      console.error(`Failed to load ${social.name} icon`);
                       (e.target as HTMLImageElement).style.display = "none";
                     }}
                   />

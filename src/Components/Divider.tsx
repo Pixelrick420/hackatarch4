@@ -38,28 +38,27 @@ function ScrollingDivider({
     outerWrapper: {
       width: "100%",
       position: "relative" as const,
-      // CRITICAL CHANGE 2: Negative margins allow the divider to physically overlap
-      // the components above and below it. Adjust these values based on desired overlap.
+
       marginTop: "-5vh",
       marginBottom: "-5vh",
       display: "flex",
-      justifyContent: "center", // This centers the wide child perfectly
+      justifyContent: "center",
       overflow: "visible",
-      zIndex: 50, // High Z-Index to sit on top
+      zIndex: 50,
       backgroundColor: "rgba(0,0,0,0)",
-      pointerEvents: "none" as const, // Allows clicks to pass through to elements behind the transparent parts
+      pointerEvents: "none" as const,
     },
     rotatedContainer: {
-      width: "120vw", // Use VW to ensure it covers width even when rotated
+      width: "120vw",
       position: "relative" as const,
-      left: "-10vw", // Center the overflow
+      left: "-10vw",
       transform: `rotate(${rotationDeg}deg)`,
       transformOrigin: "center center",
     },
     container: {
       width: "100%",
       position: "relative" as const,
-      // Keep overflow hidden HERE to crop the scrolling text, but not the wrapper
+
       overflow: "hidden",
     },
     dashedBorder: {
@@ -125,7 +124,6 @@ function ScrollingDivider({
       willChange: "transform",
     },
     textContent: {
-      //   fontFamily: "'Brains Courage Demo', cursive",
       fontSize: "clamp(2.5rem, 3.5vh, 4rem)",
       color: "#030546",
       letterSpacing: "0.03em",

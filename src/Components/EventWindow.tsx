@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
-
 import {
   ImPlay2,
   ImPause2,
@@ -18,154 +17,50 @@ import {
   ImEqualizer,
 } from "react-icons/im";
 
+interface ScreenProps {
+  isPlaying: boolean;
+  onProgressUpdate: (p: number) => void;
+  progress: number;
+}
+
 interface EventsWindowProps {
-  eventArray?: React.ReactNode[];
-  totalDuration?: number;
+  screen: React.ComponentType<ScreenProps>;
+  registrationUrl?: string;
+  title?: string;
 }
 
 const EventsWindow: React.FC<EventsWindowProps> = ({
-  eventArray = [
-    <div key={0} style={{ color: "#fff", fontSize: "24px", padding: "20px" }}>
-      Event 1
-    </div>,
-    <div key={1} style={{ color: "#fff", fontSize: "24px", padding: "20px" }}>
-      Event 2
-    </div>,
-    <div key={2} style={{ color: "#fff", fontSize: "24px", padding: "20px" }}>
-      Event 3
-    </div>,
-    <div key={3} style={{ color: "#fff", fontSize: "24px", padding: "20px" }}>
-      Event 4
-    </div>,
-  ],
-  totalDuration = 10000,
+  screen: Screen,
+  registrationUrl = "https://unstop.com/hackathons/hackquest-an-18-hour-national-hackathon-hack-at-arch-40-government-engineering-college-gec-thrissur-1662896",
+  title = "EVENTS",
 }) => {
-  const [position, setPosition] = useState({ x: 50, y: 50 });
+  const [position, setPosition] = useState({ x: 80, y: 10 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [isMinimized, setIsMinimized] = useState(false);
   const [showCannotMinimize, setShowCannotMinimize] = useState(false);
   const [showCannotMaximize, setShowCannotMaximize] = useState(false);
-
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(false);
-
   const [progress, setProgress] = useState(0);
-
   const [isSliderDragging, setIsSliderDragging] = useState(false);
-  const total = eventArray.length;
-  const currentIndex = Math.min(Math.floor(progress * total), total - 1);
+  const [screenHovered, setScreenHovered] = useState(false);
 
   const windowRef = useRef<HTMLDivElement>(null);
   const sliderRef = useRef<HTMLDivElement>(null);
   const parentRef = useRef<HTMLDivElement>(null);
 
-  const rafRef = useRef<number>(0);
-  const playStartRef = useRef<number>(0);
-  const progressAtPlay = useRef<number>(0);
-  const isPlayingRef = useRef(false);
-
-  const startRAF = useCallback(
-    (fromProgress: number) => {
-      cancelAnimationFrame(rafRef.current);
-      playStartRef.current = performance.now();
-      progressAtPlay.current = fromProgress;
-      isPlayingRef.current = true;
-
-      const tick = (now: number) => {
-        if (!isPlayingRef.current) return;
-        const elapsed = now - playStartRef.current;
-        const newProgress = Math.min(
-          progressAtPlay.current + elapsed / totalDuration,
-          1,
-        );
-        setProgress(newProgress);
-
-        if (newProgress >= 1) {
-          isPlayingRef.current = false;
-          setIsPlaying(false);
-          return;
-        }
-        rafRef.current = requestAnimationFrame(tick);
-      };
-      rafRef.current = requestAnimationFrame(tick);
-    },
-    [totalDuration],
-  );
-
-  const stopRAF = useCallback(() => {
-    isPlayingRef.current = false;
-    cancelAnimationFrame(rafRef.current);
+  // Called by the screen animation loop
+  const handleProgressUpdate = useCallback((p: number) => {
+    setProgress(p);
   }, []);
 
-  const handlePlay = useCallback(() => {
-    if (progress >= 1) {
-      setProgress(0);
-      startRAF(0);
-    } else {
-      startRAF(progress);
-    }
-    setIsPlaying(true);
-  }, [progress, startRAF]);
-
-  const handlePause = useCallback(() => {
-    stopRAF();
-    setIsPlaying(false);
-  }, [stopRAF]);
-
-  const handleStop = useCallback(() => {
-    stopRAF();
-    setIsPlaying(false);
-    setProgress(0);
-  }, [stopRAF]);
-
-  const handleGoToStart = useCallback(() => {
-    stopRAF();
-    setIsPlaying(false);
-    setProgress(0);
-  }, [stopRAF]);
-
-  const handleGoToEnd = useCallback(() => {
-    stopRAF();
-    setIsPlaying(false);
-    setProgress(1);
-  }, [stopRAF]);
-
-  const handlePrev = useCallback(() => {
-    stopRAF();
-    setIsPlaying(false);
-
-    const boundary = currentIndex / total;
-    const atBoundary = Math.abs(progress - boundary) < 0.001;
-    const target = atBoundary
-      ? Math.max(0, (currentIndex - 1) / total)
-      : boundary;
-    setProgress(target);
-  }, [stopRAF, currentIndex, total, progress]);
-
-  const handleNext = useCallback(() => {
-    stopRAF();
-    setIsPlaying(false);
-    const target = Math.min((currentIndex + 1) / total, 1);
-    setProgress(target);
-  }, [stopRAF, currentIndex, total]);
-
-  const handleMute = () => setIsMuted((m) => !m);
-
-  const handleBack = handlePrev;
-  const handleForward = handleNext;
-
-  const progressFromClientX = useCallback(
-    (clientX: number) => {
-      if (!sliderRef.current) return;
-      const rect = sliderRef.current.getBoundingClientRect();
-      const pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-      stopRAF();
-      setIsPlaying(false);
-      setProgress(pct);
-    },
-    [stopRAF],
-  );
+  const progressFromClientX = useCallback((clientX: number) => {
+    if (!sliderRef.current) return;
+    const rect = sliderRef.current.getBoundingClientRect();
+    const pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    setProgress(pct);
+  }, []);
 
   const handleSliderMouseDown = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -203,7 +98,6 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
       setIsDragging(false);
       setIsSliderDragging(false);
     };
-
     if (isDragging || isSliderDragging) {
       document.addEventListener("mousemove", onMove);
       document.addEventListener("mouseup", onUp);
@@ -214,7 +108,23 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
     };
   }, [isDragging, isSliderDragging, dragOffset, progressFromClientX]);
 
-  useEffect(() => () => stopRAF(), [stopRAF]);
+  const handlePlay = () => setIsPlaying(true);
+  const handlePause = () => setIsPlaying(false);
+  const handleStop = () => {
+    setIsPlaying(false);
+    setProgress(0);
+  };
+  const handleGoToStart = () => {
+    setIsPlaying(false);
+    setProgress(0);
+  };
+  const handleGoToEnd = () => {
+    setIsPlaying(false);
+    setProgress(1);
+  };
+  const handlePrev = () => setProgress((p) => Math.max(0, p - 0.1));
+  const handleNext = () => setProgress((p) => Math.min(1, p + 0.1));
+  const handleMute = () => setIsMuted((m) => !m);
 
   const handleMinimize = () => {
     if (isMinimized) {
@@ -228,6 +138,9 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
       setTimeout(() => setShowCannotMaximize(false), 2000);
     } else setIsMinimized(false);
   };
+
+  const atStart = progress <= 0;
+  const atEnd = progress >= 1;
 
   const iconBtn = (active = false, disabled = false): React.CSSProperties => ({
     background: active ? "#a0a0a0" : "none",
@@ -256,16 +169,13 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
     color: "#0A3248",
   };
 
-  const atStart = progress <= 0;
-  const atEnd = progress >= 1;
-
   return (
     <div
       ref={parentRef}
       style={{
         position: "relative",
         width: "100%",
-        height: "100vh",
+        height: "100%",
         background: "transparent",
         overflow: "hidden",
       }}
@@ -277,7 +187,7 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
           left: `${position.x}px`,
           top: `${position.y}px`,
           width: isMinimized ? "220px" : "600px",
-          height: isMinimized ? "auto" : "650px",
+          height: isMinimized ? "auto" : "calc(50vh - 20px)",
           border: "3px solid #444",
           borderRadius: "6px",
           overflow: "hidden",
@@ -291,7 +201,7 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
         <div
           onMouseDown={handleTitleMouseDown}
           style={{
-            background: "linear-gradient(to right, #a8d5a8, #6b9999)",
+            background: "#3AAE95",
             height: "36px",
             cursor: isDragging ? "grabbing" : "grab",
             display: "flex",
@@ -311,7 +221,7 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
               pointerEvents: "none",
             }}
           >
-            EVENTS — {currentIndex + 1} / {total}
+            {title}
           </span>
           <button
             style={titleIconBtn}
@@ -350,15 +260,15 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
         >
           <button
             style={iconBtn(false, atStart)}
-            onClick={handleBack}
-            title="Previous event"
+            onClick={handlePrev}
+            title="Previous"
           >
             <ImArrowLeft size={20} color={atStart ? "#aaa" : "#0A3248"} />
           </button>
           <button
             style={iconBtn(false, atEnd)}
-            onClick={handleForward}
-            title="Next event"
+            onClick={handleNext}
+            title="Next"
           >
             {" "}
             <ImArrowRight size={20} color={atEnd ? "#aaa" : "#0A3248"} />
@@ -377,18 +287,53 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
           </button>
         </div>
 
-        {/* Main screen */}
+        {/* Screen — clickable */}
         <div
+          onClick={() => window.open(registrationUrl, "_blank")}
+          onMouseEnter={() => setScreenHovered(true)}
+          onMouseLeave={() => setScreenHovered(false)}
           style={{
-            background: "#000",
             height: isMinimized ? "0px" : "calc(100% - 44px - 36px - 70px)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
             overflow: "hidden",
+            position: "relative",
+            cursor: "pointer",
           }}
         >
-          {!isMinimized && eventArray[currentIndex]}
+          {!isMinimized && (
+            <Screen
+              isPlaying={isPlaying}
+              onProgressUpdate={handleProgressUpdate}
+              progress={progress}
+            />
+          )}
+          {screenHovered && !isMinimized && (
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                backgroundColor: "rgba(58,174,149,0.18)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                pointerEvents: "none",
+              }}
+            >
+              <div
+                style={{
+                  backgroundColor: "rgba(10,50,72,0.88)",
+                  border: "2px solid #3aae95",
+                  borderRadius: "4px",
+                  padding: "6px 16px",
+                  color: "#3aae95",
+                  fontSize: "clamp(9px,1.4vw,12px)",
+                  letterSpacing: "0.2em",
+                  fontFamily: "'American Captain',monospace",
+                }}
+              >
+                CLICK TO REGISTER
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Bottom controls */}
@@ -402,9 +347,10 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
               padding: "8px 10px",
               gap: "6px",
               borderTop: "2px solid #888",
+              overflow: "hidden",
             }}
           >
-            {/* Scrubber — pixel-perfect teal fill */}
+            {/* Scrubber */}
             <div
               ref={sliderRef}
               onMouseDown={handleSliderMouseDown}
@@ -442,15 +388,13 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
                 }}
               />
             </div>
-
-            {/* Transport row */}
+            {/* Transport */}
             <div style={{ display: "flex", alignItems: "center", gap: "2px" }}>
               <button
                 style={iconBtn(false, atStart)}
                 onClick={handleGoToStart}
                 title="Go to start"
               >
-                {" "}
                 <ImPrevious size={18} />
               </button>
               <button
@@ -461,8 +405,6 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
                 {" "}
                 <ImBackward2 size={18} />
               </button>
-
-              {/* Play/Pause toggle — only one shown at a time */}
               {isPlaying ? (
                 <button
                   style={iconBtn(true)}
@@ -481,7 +423,6 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
                   <ImPlay2 size={18} color={atEnd ? "#aaa" : "#222"} />
                 </button>
               )}
-
               <button style={iconBtn(false)} onClick={handleStop} title="Stop">
                 {" "}
                 <ImStop size={18} />
@@ -511,8 +452,6 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
                 }}
               />
               <div style={{ flex: 1 }} />
-
-              {/* Mute toggle */}
               {isMuted ? (
                 <button
                   style={iconBtn(true)}
@@ -536,50 +475,34 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
         )}
       </div>
 
-      {showCannotMinimize && (
-        <div
-          style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%,-50%)",
-            background: "#c0c0c0",
-            border: "3px solid #444",
-            borderRadius: "6px",
-            padding: "24px 40px",
-            fontSize: "16px",
-            fontFamily: "'American Captain', monospace",
-            boxShadow: "4px 4px 0 rgba(0,0,0,0.6)",
-            zIndex: 1000,
-            color: "#0A3248",
-          }}
-        >
-          Cannot Minimize
-        </div>
-      )}
-      {showCannotMaximize && (
-        <div
-          style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%,-50%)",
-            background: "#c0c0c0",
-            border: "3px solid #444",
-            borderRadius: "6px",
-            padding: "24px 40px",
-            fontSize: "16px",
-            fontFamily: "'American Captain', monospace",
-            boxShadow: "4px 4px 0 rgba(0,0,0,0.6)",
-            zIndex: 1000,
-            color: "#0A3248",
-          }}
-        >
-          Cannot Maximize
-        </div>
-      )}
+      {showCannotMinimize && <Toast>Cannot Minimize</Toast>}
+      {showCannotMaximize && <Toast>Cannot Maximize</Toast>}
     </div>
   );
 };
+
+function Toast({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      style={{
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%,-50%)",
+        background: "#c0c0c0",
+        border: "3px solid #444",
+        borderRadius: "6px",
+        padding: "24px 40px",
+        fontSize: "16px",
+        fontFamily: "'American Captain',monospace",
+        boxShadow: "4px 4px 0 rgba(0,0,0,0.6)",
+        zIndex: 1000,
+        color: "#0A3248",
+      }}
+    >
+      {children}
+    </div>
+  );
+}
 
 export default EventsWindow;

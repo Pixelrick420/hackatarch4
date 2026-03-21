@@ -9,30 +9,63 @@ const COLORS = {
   cream: "#F8EDCD",
 };
 
-// Deterministic dot positions so they don't jump on re-render
 const DOTS = Array.from({ length: 50 }, (_, i) => {
-  // simple pseudo-random from index
   const t1 = Math.sin(i * 127.1) * 43758.5453;
   const t2 = Math.sin(i * 311.7) * 43758.5453;
   return {
-    x: (t1 - Math.floor(t1)) * 90 + 5, // 5–95%
-    y: (t2 - Math.floor(t2)) * 90 + 5, // 5–95%
-    r: 3 + (i % 3) * 1.5, // 3, 4.5, or 6px
+    x: (t1 - Math.floor(t1)) * 90 + 5,
+    y: (t2 - Math.floor(t2)) * 90 + 5,
+    r: 3 + (i % 3) * 1.5,
   };
 });
+
+const KF = "about-kf";
+if (typeof document !== "undefined" && !document.getElementById(KF)) {
+  const s = document.createElement("style");
+  s.id = KF;
+  s.textContent = `
+    @keyframes aLeft  { from{opacity:0;transform:translateX(-48px)} to{opacity:1;transform:none} }
+    @keyframes aRight { from{opacity:0;transform:translateX(48px)}  to{opacity:1;transform:none} }
+    @keyframes aUp    { from{opacity:0;transform:translateY(32px)}  to{opacity:1;transform:none} }
+  `;
+  document.head.appendChild(s);
+}
 
 function About() {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [isHovering, setIsHovering] = useState(false);
+  const [visible, setVisible] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth);
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  useEffect(() => {
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          setVisible(true);
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.5 },
+    );
+    if (containerRef.current) obs.observe(containerRef.current);
+    return () => obs.disconnect();
+  }, []);
+
   const isMobile = windowWidth < 900;
+  const a = (name: string, delay: number): React.CSSProperties =>
+    visible
+      ? {
+          animation: `${name} 0.75s cubic-bezier(0.22,1,0.36,1) ${delay}s both`,
+        }
+      : { opacity: 0 };
 
   return (
     <div
@@ -49,7 +82,6 @@ function About() {
         boxSizing: "border-box",
       }}
     >
-      {/* ── Large navy circle (top-right) with logo centered inside ── */}
       <div
         style={{
           position: "absolute",
@@ -67,7 +99,6 @@ function About() {
           justifyContent: "center",
         }}
       />
-      {/* Logo centered in the circle — same position/size as the circle */}
       <div
         style={{
           position: "absolute",
@@ -100,7 +131,6 @@ function About() {
         />
       </div>
 
-      {/* ── Random black dots ── */}
       {DOTS.map((dot, i) => (
         <div
           key={i}
@@ -115,11 +145,12 @@ function About() {
             pointerEvents: "none",
             zIndex: 0,
             transform: "translate(-50%, -50%)",
+            opacity: visible ? 1 : 0,
+            transition: `opacity 0.4s ease ${0.05 + i * 0.015}s`,
           }}
         />
       ))}
 
-      {/* ── Main content ── */}
       <div
         style={{
           position: "relative",
@@ -144,13 +175,13 @@ function About() {
             margin: "0 auto",
           }}
         >
-          {/* LEFT — cassette image */}
           <div
             style={{
               flex: "0 0 auto",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
+              ...a("aLeft", 0.05),
             }}
           >
             <img
@@ -168,7 +199,6 @@ function About() {
             />
           </div>
 
-          {/* RIGHT — text */}
           <div
             style={{
               flex: 1,
@@ -176,6 +206,7 @@ function About() {
               flexDirection: "column",
               alignItems: isMobile ? "center" : "flex-start",
               textAlign: isMobile ? "center" : "left",
+              ...a("aRight", 0.2),
             }}
           >
             <h1
@@ -189,7 +220,6 @@ function About() {
               HACK@ARCH
             </h1>
 
-            {/* Accent underline */}
             <div
               style={{
                 width: isMobile ? "40%" : "clamp(60px, 6vw, 120px)",
@@ -233,6 +263,7 @@ function About() {
                 gap: "1.2rem",
                 flexWrap: "wrap",
                 justifyContent: isMobile ? "center" : "flex-start",
+                ...a("aUp", 0.35),
               }}
             >
               <button
@@ -264,7 +295,6 @@ function About() {
         </div>
       </div>
 
-      {/* ── Star decoration ── */}
       <img
         src="/star.png"
         alt=""
@@ -275,7 +305,8 @@ function About() {
           width: "5vh",
           height: "auto",
           zIndex: 2,
-          opacity: 0.7,
+          opacity: visible ? 0.7 : 0,
+          transition: "opacity 0.6s ease 0.5s",
         }}
         onError={(e) => {
           (e.target as HTMLImageElement).style.display = "none";

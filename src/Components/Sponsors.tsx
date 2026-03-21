@@ -1,5 +1,23 @@
 import React, { useState, useEffect, useRef } from "react";
 
+const KF = "sponsors-kf";
+if (typeof document !== "undefined" && !document.getElementById(KF)) {
+  const s = document.createElement("style");
+  s.id = KF;
+  s.textContent = `
+    @keyframes spUp    { from{opacity:0;transform:translateY(32px)} to{opacity:1;transform:none} }
+    @keyframes spLeft  { from{opacity:0;transform:translateX(-48px)} to{opacity:1;transform:none} }
+    @keyframes spScale { from{opacity:0;transform:scale(0.92)}      to{opacity:1;transform:none} }
+    @keyframes wiggle {
+      0%, 100% { transform: rotate(0deg) scale(1); }
+      25% { transform: rotate(-2deg) scale(1.02); }
+      50% { transform: rotate(2deg) scale(1.04); }
+      75% { transform: rotate(-1deg) scale(1.02); }
+    }
+  `;
+  document.head.appendChild(s);
+}
+
 interface SponsorsProps {
   cassetteImage?: string;
 }
@@ -13,7 +31,8 @@ const Sponsors: React.FC<SponsorsProps> = ({
   const [currentSponsor, setCurrentSponsor] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isWiggling, setIsWiggling] = useState(false);
-
+  const [visible, setVisible] = useState(false);
+  const sectionRef = useRef<HTMLDivElement>(null);
   const sponsors = ["/sponsor1.webp", "/sponsor2.webp"];
   const intervalRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -30,6 +49,20 @@ const Sponsors: React.FC<SponsorsProps> = ({
   }, []);
 
   useEffect(() => {
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          setVisible(true);
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.5 },
+    );
+    if (sectionRef.current) obs.observe(sectionRef.current);
+    return () => obs.disconnect();
+  }, []);
+
+  useEffect(() => {
     if (isPlaying) {
       intervalRef.current = setInterval(() => {
         setCurrentSponsor((prev) => (prev + 1) % sponsors.length);
@@ -37,11 +70,8 @@ const Sponsors: React.FC<SponsorsProps> = ({
     } else if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
-
     return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
+      if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, [isPlaying, sponsors.length]);
 
@@ -49,28 +79,28 @@ const Sponsors: React.FC<SponsorsProps> = ({
     setIsPlaying(false);
     setCurrentSponsor((prev) => (prev + 1) % sponsors.length);
   };
-
   const handlePrev = () => {
     setIsPlaying(false);
     setCurrentSponsor((prev) => (prev - 1 + sponsors.length) % sponsors.length);
   };
-
   const handlePlay = () => {
     setIsPlaying(true);
     setIsWiggling(true);
     setTimeout(() => setIsWiggling(false), 600);
   };
 
+  const a = (name: string, delay: number): React.CSSProperties =>
+    visible
+      ? {
+          animation: `${name} 0.75s cubic-bezier(0.22,1,0.36,1) ${delay}s both`,
+        }
+      : { opacity: 0 };
+
   return (
     <>
+      <div style={{ background: "#F6EDC4", width: "100%", height: "6vh" }} />
       <div
-        style={{
-          background: "#F6EDC4",
-          width: "100%",
-          height: "6vh",
-        }}
-      ></div>
-      <div
+        ref={sectionRef}
         style={{
           width: "100%",
           background: "#F6EDC4",
@@ -97,6 +127,7 @@ const Sponsors: React.FC<SponsorsProps> = ({
               whiteSpace: "nowrap",
               lineHeight: 1,
               color: "#0A3248",
+              ...a("spUp", 0.05),
             }}
           >
             SPONSORS
@@ -119,6 +150,7 @@ const Sponsors: React.FC<SponsorsProps> = ({
               maxWidth: "fit-content",
               position: "relative",
               width: "100%",
+              ...a("spScale", 0.1),
             }}
           >
             {!isSmallScreen && (
@@ -146,7 +178,6 @@ const Sponsors: React.FC<SponsorsProps> = ({
                 SPONSORS
               </h1>
             )}
-
             <div
               style={{
                 padding: isSmallScreen ? "20px 10px" : "40px 20px",
@@ -168,23 +199,19 @@ const Sponsors: React.FC<SponsorsProps> = ({
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
+                    ...a("spLeft", 0.3),
                   }}
                 >
                   <img
                     src={cassetteImage}
                     alt="Retro Cassette"
-                    style={{
-                      width: "100%",
-                      maxWidth: "400px",
-                      height: "auto",
-                    }}
+                    style={{ width: "100%", maxWidth: "400px", height: "auto" }}
                     onError={(e) => {
                       e.currentTarget.style.display = "none";
                     }}
                   />
                 </div>
               )}
-
               <div
                 style={{
                   maxWidth: screenWidth < 700 ? "100%" : "500px",
@@ -195,6 +222,7 @@ const Sponsors: React.FC<SponsorsProps> = ({
                   flexDirection: "column",
                   alignItems: "center",
                   justifyContent: "space-evenly",
+                  ...a("spUp", 0.45),
                 }}
               >
                 <div
@@ -241,16 +269,7 @@ const Sponsors: React.FC<SponsorsProps> = ({
                       }}
                     />
                   ))}
-                  <style>{`
-                                        @keyframes wiggle {
-                                            0%, 100% { transform: rotate(0deg) scale(1); }
-                                            25% { transform: rotate(-2deg) scale(1.02); }
-                                            50% { transform: rotate(2deg) scale(1.04); }
-                                            75% { transform: rotate(-1deg) scale(1.02); }
-                                        }
-                                    `}</style>
                 </div>
-
                 <div
                   style={{
                     display: "flex",
@@ -292,7 +311,6 @@ const Sponsors: React.FC<SponsorsProps> = ({
                       }}
                     />
                   </button>
-
                   <button
                     onClick={handlePlay}
                     style={{
@@ -327,7 +345,6 @@ const Sponsors: React.FC<SponsorsProps> = ({
                       }}
                     />
                   </button>
-
                   <button
                     onClick={handleNext}
                     style={{

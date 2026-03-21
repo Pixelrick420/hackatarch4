@@ -1,7 +1,26 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+
+const KF = "contact-kf";
+if (typeof document !== "undefined" && !document.getElementById(KF)) {
+  const s = document.createElement("style");
+  s.id = KF;
+  s.textContent = `
+    @keyframes ctUp    { from{opacity:0;transform:translateY(32px)} to{opacity:1;transform:none} }
+    @keyframes ctLeft  { from{opacity:0;transform:translateX(-48px)} to{opacity:1;transform:none} }
+    @keyframes ctRight { from{opacity:0;transform:translateX(48px)}  to{opacity:1;transform:none} }
+    @keyframes mapPulse { 0%,100%{opacity:0.5} 50%{opacity:1} }
+    @keyframes mapDotSpin {
+      0%   { transform: translate(-50%,-50%) rotate(0deg)   translateX(18px); }
+      100% { transform: translate(-50%,-50%) rotate(360deg) translateX(18px); }
+    }
+  `;
+  document.head.appendChild(s);
+}
 
 function Contact() {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [visible, setVisible] = useState(false);
+  const sectionRef = useRef<HTMLDivElement>(null);
   const isMobile = windowWidth < 1000;
 
   useEffect(() => {
@@ -10,22 +29,44 @@ function Contact() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  useEffect(() => {
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          setVisible(true);
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.5 },
+    );
+    if (sectionRef.current) obs.observe(sectionRef.current);
+    return () => obs.disconnect();
+  }, []);
+
   const leads = [
     { name: "Dharshana KS - Arch.ai Lead", phone: "+91 98765 43211" },
     { name: "Sreemrudu KP - TinkerHub GECT Lead", phone: "+91 98765 43210" },
   ];
 
   const cardStyle: React.CSSProperties = {
-    backgroundColor: "#F5E6C8",
+    backgroundColor: "#F6EDC4",
     border: "2px solid black",
     borderRadius: "3vh",
     boxShadow: "4px 4px 0 #E5AD58",
     padding: "3vh 3vw",
   };
 
+  const a = (name: string, delay: number): React.CSSProperties =>
+    visible
+      ? {
+          animation: `${name} 0.75s cubic-bezier(0.22,1,0.36,1) ${delay}s both`,
+        }
+      : { opacity: 0 };
+
   return (
     <div
       id="contact"
+      ref={sectionRef}
       style={{
         width: "100%",
         minHeight: "100vh",
@@ -38,7 +79,6 @@ function Contact() {
         overflow: "hidden",
       }}
     >
-      {/* top-right corner bracket */}
       <div
         style={{
           position: "absolute",
@@ -54,7 +94,6 @@ function Contact() {
         }}
       />
 
-      {/* bottom-left corner bracket */}
       <div
         style={{
           position: "absolute",
@@ -70,7 +109,6 @@ function Contact() {
         }}
       />
 
-      {/* Scrolling X banner */}
       <div
         style={{
           position: "relative",
@@ -105,7 +143,6 @@ function Contact() {
         </div>
       </div>
 
-      {/* Star corners */}
       <div
         style={{
           position: "absolute",
@@ -118,6 +155,8 @@ function Contact() {
           display: "grid",
           gridTemplateColumns: "1fr auto",
           gridTemplateRows: "auto 1fr",
+          opacity: visible ? 1 : 0,
+          transition: "opacity 0.6s ease 0.3s",
         }}
       >
         <div
@@ -163,7 +202,6 @@ function Contact() {
         </div>
       </div>
 
-      {/* Main content */}
       <div
         style={{
           display: "grid",
@@ -173,19 +211,19 @@ function Contact() {
           minHeight: "100vh",
         }}
       >
-        {/* Title */}
         <div
           style={{
             display: "grid",
             placeItems: "center",
             paddingTop: "5vh",
             paddingBottom: "5vh",
+            ...a("ctUp", 0.05),
           }}
         >
           <div
             style={{
               fontFamily: "'American' Captain",
-              fontSize: "clamp(2rem, 6vw, 5rem)",
+              fontSize: "clamp(2rem, 5vw, 4rem)",
               letterSpacing: "0.05em",
               textAlign: "center",
               color: "#0A3248",
@@ -195,7 +233,6 @@ function Contact() {
           </div>
         </div>
 
-        {/* Two-column body */}
         <div
           style={{
             padding: "0 5vw 8vh",
@@ -205,10 +242,10 @@ function Contact() {
             alignItems: "stretch",
           }}
         >
-          {/* LEFT: map */}
-          <MapCard isMobile={isMobile} />
+          <div style={{ flex: 1, ...a("ctLeft", 0.2) }}>
+            <MapCard isMobile={isMobile} />
+          </div>
 
-          {/* RIGHT: venue + leads */}
           <div
             style={{
               flex: 1,
@@ -217,7 +254,6 @@ function Contact() {
               gap: "3vh",
             }}
           >
-            {/* Venue */}
             <div style={cardStyle}>
               <p
                 style={{
@@ -246,13 +282,13 @@ function Contact() {
               </p>
             </div>
 
-            {/* Leads — flex:1 fills remaining height to match map */}
             <div
               style={{
                 ...cardStyle,
                 flex: 1,
                 display: "flex",
                 flexDirection: "column",
+                ...a("ctRight", 0.35),
               }}
             >
               <p
@@ -314,20 +350,81 @@ function Contact() {
 
 function MapCard({ isMobile }: { isMobile: boolean }) {
   const [hovered, setHovered] = useState(false);
+  const [mapLoaded, setMapLoaded] = useState(false);
+  const minH = isMobile ? "55vw" : "55vh";
+
   return (
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        flex: 1,
+        height: "100%",
+        position: "relative",
         border: `2px solid ${hovered ? "#005061" : "black"}`,
         borderRadius: "3vh",
         boxShadow: hovered ? "6px 6px 0 #005061" : "6px 6px 0 #E5AD58",
         overflow: "hidden",
-        minHeight: isMobile ? "55vw" : "55vh",
+        minHeight: minH,
         transition: "border-color 0.2s ease, box-shadow 0.2s ease",
       }}
     >
+      {/* Loading placeholder */}
+      {!mapLoaded && (
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            backgroundColor: "#F6EDC4",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "1.5rem",
+            zIndex: 2,
+          }}
+        >
+          {/* Spinning orbit dots */}
+          <div style={{ position: "relative", width: "48px", height: "48px" }}>
+            {[0, 1, 2, 3].map((i) => (
+              <div
+                key={i}
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  width: "8px",
+                  height: "8px",
+                  borderRadius: "50%",
+                  backgroundColor: "#0A3248",
+                  animation: `mapDotSpin 1.2s linear ${i * 0.3}s infinite`,
+                  transformOrigin: "0 0",
+                }}
+              />
+            ))}
+          </div>
+          {/* Label */}
+          <div
+            style={{
+              fontFamily: "'American' Captain",
+              fontSize: "clamp(0.8rem, 1.5vw, 1rem)",
+              color: "#0A3248",
+              letterSpacing: "0.15em",
+              animation: "mapPulse 1.8s ease-in-out infinite",
+            }}
+          >
+            LOADING MAP...
+          </div>
+          <div
+            style={{
+              width: "60px",
+              height: "3px",
+              backgroundColor: "#F6EDC4",
+              borderRadius: "2px",
+            }}
+          />
+        </div>
+      )}
+
       <iframe
         title="Government Engineering College Thrissur"
         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3922.31492332497!2d76.22466!3d10.5545108!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba7eee301ff400f%3A0x8851e3d8fc9c94f0!2sGovernment%20Engineering%20College%20Thrissur%20(GEC%20Thrissur)!5e0!3m2!1sen!2sin!4v1774072457982!5m2!1sen!2sin"
@@ -336,12 +433,16 @@ function MapCard({ isMobile }: { isMobile: boolean }) {
         style={{
           border: "none",
           display: "block",
-          minHeight: isMobile ? "55vw" : "55vh",
+          height: "100%",
+          minHeight: minH,
           filter: "sepia(20%) contrast(1.05)",
+          opacity: mapLoaded ? 1 : 0,
+          transition: "opacity 0.5s ease",
         }}
         allowFullScreen
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"
+        onLoad={() => setMapLoaded(true)}
       />
     </div>
   );

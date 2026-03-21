@@ -4,6 +4,20 @@ const background = "#F6EDC4";
 const navy = "#0A3248";
 const teal = "#4FD7C0";
 
+const KF = "workshops-kf";
+if (typeof document !== "undefined" && !document.getElementById(KF)) {
+  const s = document.createElement("style");
+  s.id = KF;
+  s.textContent = `
+    @keyframes wsUp    { from{opacity:0;transform:translateY(32px)} to{opacity:1;transform:none} }
+    @keyframes wsLeft  { from{opacity:0;transform:translateX(-48px)} to{opacity:1;transform:none} }
+    @keyframes wsRight { from{opacity:0;transform:translateX(48px)}  to{opacity:1;transform:none} }
+    @keyframes spin { from{transform:translate(-50%,-50%) rotate(0deg)} to{transform:translate(-50%,-50%) rotate(360deg)} }
+    @keyframes scrollRight { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+  `;
+  document.head.appendChild(s);
+}
+
 function SpinningRing() {
   const trapezoidCount = 15;
   return (
@@ -51,12 +65,10 @@ function SpinningRing() {
 
 function ComingSoonSlot() {
   const [blink, setBlink] = useState(true);
-
   useEffect(() => {
     const id = setInterval(() => setBlink((b) => !b), 700);
     return () => clearInterval(id);
   }, []);
-
   return (
     <div
       style={{
@@ -76,10 +88,7 @@ function ComingSoonSlot() {
           aspectRatio: "1",
         }}
       >
-        {/* Spinning ring */}
         <SpinningRing />
-
-        {/* Centre content */}
         <div
           style={{
             position: "absolute",
@@ -96,7 +105,6 @@ function ComingSoonSlot() {
             boxSizing: "border-box",
           }}
         >
-          {/* Question mark stamp */}
           <div
             style={{
               width: "clamp(2.5rem, 8vw, 5rem)",
@@ -122,8 +130,6 @@ function ComingSoonSlot() {
               ?
             </span>
           </div>
-
-          {/* Blinking COMING SOON text */}
           <div
             style={{
               fontFamily: "'American Captain', 'Arial Black', sans-serif",
@@ -158,10 +164,10 @@ export default function Workshops() {
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
   const [notes, setNotes] = useState<MusicNote[]>([]);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [visible, setVisible] = useState(false);
   const nextNoteIdRef = useRef(0);
   const animationRef = useRef<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-
   const MAX_NOTES = 10;
   const [containerWidth, setContainerWidth] = useState(0);
   const noteImages = ["/note1.png", "/note2.png", "/note3.png", "/note4.png"];
@@ -175,6 +181,20 @@ export default function Workshops() {
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          setVisible(true);
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.5 },
+    );
+    if (containerRef.current) obs.observe(containerRef.current);
+    return () => obs.disconnect();
   }, []);
 
   useEffect(() => {
@@ -218,6 +238,13 @@ export default function Workshops() {
     };
   }, [containerWidth]);
 
+  const a = (name: string, delay: number): React.CSSProperties =>
+    visible
+      ? {
+          animation: `${name} 0.75s cubic-bezier(0.22,1,0.36,1) ${delay}s both`,
+        }
+      : { opacity: 0 };
+
   return (
     <div
       ref={containerRef}
@@ -230,7 +257,6 @@ export default function Workshops() {
         height: "min(800px, 100vw)",
       }}
     >
-      {/* Title */}
       <div
         style={{
           fontFamily: "'American' Captain",
@@ -238,14 +264,14 @@ export default function Workshops() {
           paddingTop: "5vh",
           fontSize: "clamp(2rem, 4vh, 5vh)",
           letterSpacing: "0.05em",
-          zIndex: 2,
+          zIndex: "2" as unknown as number,
           color: navy,
+          ...a("wsUp", 0.05),
         }}
       >
         <h1 style={{ margin: 0 }}>WORKSHOPS</h1>
       </div>
 
-      {/* Workshop slots */}
       <div
         style={{
           display: "flex",
@@ -263,6 +289,7 @@ export default function Workshops() {
             flex: "1 1 0",
             maxWidth: "600px",
             marginLeft: screenWidth >= 1600 ? "3vw" : "0",
+            ...a("wsLeft", 0.2),
           }}
         >
           <ComingSoonSlot />
@@ -272,6 +299,7 @@ export default function Workshops() {
             flex: "1 1 0",
             maxWidth: "600px",
             marginLeft: screenWidth >= 1600 ? "3vw" : "0",
+            ...a("wsRight", 0.35),
           }}
         >
           <ComingSoonSlot />
@@ -288,7 +316,7 @@ export default function Workshops() {
               right: "2vw",
               bottom: "40%",
               height: "min(400px, 100vw)",
-              objectFit: "contain",
+              objectFit: "contain" as unknown as undefined,
               opacity: 0.6,
             }}
           >
@@ -297,7 +325,6 @@ export default function Workshops() {
         )}
       </div>
 
-      {/* Scrolling X banner */}
       <div
         style={{
           position: "relative",
@@ -331,42 +358,33 @@ export default function Workshops() {
         </div>
       </div>
 
-      {/* Floating music notes */}
-      {notes.map((note) => (
-        <div
-          key={note.id}
-          style={{
-            position: "absolute",
-            left: `${note.x}px`,
-            top: `${note.y}vh`,
-            width: `${note.size}px`,
-            height: `${note.size}px`,
-            zIndex: 1,
-            pointerEvents: "none",
-            userSelect: "none",
-            WebkitUserSelect: "none",
-            MozUserSelect: "none",
-            msUserSelect: "none",
-          }}
-        >
-          <img
-            src={noteImages[note.id % noteImages.length]}
-            alt="music note"
-            style={{ width: "100%", height: "100%", objectFit: "contain" }}
-          />
-        </div>
-      ))}
-
-      <style>{`
-                @keyframes spin {
-                    from { transform: translate(-50%, -50%) rotate(0deg); }
-                    to   { transform: translate(-50%, -50%) rotate(360deg); }
-                }
-                @keyframes scrollRight {
-                    0%   { transform: translateX(0); }
-                    100% { transform: translateX(-50%); }
-                }
-            `}</style>
+      {notes.map((note) => {
+        const noteImage = noteImages[note.id % noteImages.length];
+        return (
+          <div
+            key={note.id}
+            style={{
+              position: "absolute",
+              left: `${note.x}px`,
+              top: `${note.y}vh`,
+              width: `${note.size}px`,
+              height: `${note.size}px`,
+              zIndex: 1,
+              pointerEvents: "none",
+              userSelect: "none",
+              WebkitUserSelect: "none",
+              MozUserSelect: "none",
+              msUserSelect: "none",
+            }}
+          >
+            <img
+              src={noteImage}
+              alt="music note"
+              style={{ width: "100%", height: "100%", objectFit: "contain" }}
+            />
+          </div>
+        );
+      })}
     </div>
   );
 }

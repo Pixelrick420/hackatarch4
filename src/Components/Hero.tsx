@@ -29,55 +29,19 @@ const DOTS = Array.from({ length: 18 }, (_, i) => {
   };
 });
 
-// Inject keyframes once at module level
 const STYLE_ID = "hero-keyframes";
 if (typeof document !== "undefined" && !document.getElementById(STYLE_ID)) {
   const s = document.createElement("style");
   s.id = STYLE_ID;
   s.textContent = `
-    @keyframes heroFadeUp {
-      from { opacity: 0; transform: translateY(32px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes heroFadeLeft {
-      from { opacity: 0; transform: translateX(-40px); }
-      to   { opacity: 1; transform: translateX(0); }
-    }
-    @keyframes heroFadeRight {
-      from { opacity: 0; transform: translateX(40px); }
-      to   { opacity: 1; transform: translateX(0); }
-    }
-    @keyframes heroScaleIn {
-      from { opacity: 0; transform: scale(0.88); }
-      to   { opacity: 1; transform: scale(1); }
-    }
-    @keyframes heroBracketH {
-      from { width: 0; }
-      to   { width: 5vw; }
-    }
-    @keyframes heroBracketV {
-      from { height: 0; }
-      to   { height: 5vh; }
-    }
-    @keyframes heroLineGrow {
-      from { width: 0; opacity: 0; }
-      to   { opacity: 0.45; }
-    }
-    @keyframes heroLineGrow2 {
-      from { width: 0; opacity: 0; }
-      to   { opacity: 0.2; }
-    }
-    @keyframes heroPulse {
-      0%, 100% { opacity: 0.04; }
-      50%       { opacity: 0.07; }
-    }
-    @keyframes heroStatPop {
-      from { opacity: 0; transform: translateY(16px) scale(0.92); }
-      to   { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    @keyframes heroRuleGrow {
-      from { width: 0; }
-    }
+    @keyframes heroFadeUp    { from { opacity:0; transform:translateY(32px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes heroFadeLeft  { from { opacity:0; transform:translateX(-40px); } to { opacity:1; transform:translateX(0); } }
+    @keyframes heroScaleIn   { from { opacity:0; transform:scale(0.88); } to { opacity:1; transform:scale(1); } }
+    @keyframes heroLineGrow  { from { width:0; opacity:0; } to { opacity:0.45; } }
+    @keyframes heroLineGrow2 { from { width:0; opacity:0; } to { opacity:0.2; } }
+    @keyframes heroPulse     { 0%,100% { opacity:0.04; } 50% { opacity:0.07; } }
+    @keyframes heroStatPop   { from { opacity:0; transform:translateY(16px) scale(0.92); } to { opacity:1; transform:translateY(0) scale(1); } }
+    @keyframes heroRuleGrow  { from { width:0; } }
   `;
   document.head.appendChild(s);
 }
@@ -114,7 +78,6 @@ function HeroSection({ ready = false }: { ready?: boolean }) {
   const starSize = (phase: number) =>
     phase < 1 ? phase * MAX_STAR_SIZE : (2 - phase) * MAX_STAR_SIZE;
 
-  // Shared animation helper
   const anim = (
     name: string,
     delay: number,
@@ -128,15 +91,16 @@ function HeroSection({ ready = false }: { ready?: boolean }) {
 
   const STATS = [
     { val: "2500+", label: "Registrations" },
-    { val: "500+", label: "Participants" },
     { val: "100+", label: "Colleges" },
+    { val: "₹2.5L", label: "Prize Pool" },
   ];
 
   return (
     <div
       style={{
         width: "100%",
-        height: "100vh",
+
+        height: isMobile ? "70vh" : "100vh",
         position: "relative",
         backgroundColor: C.bg,
         overflow: "hidden",
@@ -144,7 +108,7 @@ function HeroSection({ ready = false }: { ready?: boolean }) {
         padding: 0,
       }}
     >
-      {/* ── BACKGROUND ── */}
+      {/* Background */}
       <div
         style={{
           position: "absolute",
@@ -157,7 +121,7 @@ function HeroSection({ ready = false }: { ready?: boolean }) {
         }}
       />
 
-      {/* Teal circle — bottom left, floats in */}
+      {/* Teal circle */}
       <div
         style={{
           position: "absolute",
@@ -174,7 +138,7 @@ function HeroSection({ ready = false }: { ready?: boolean }) {
         }}
       />
 
-      {/* Navy rotated square — top right */}
+      {/* Navy rotated square */}
       <div
         style={{
           position: "absolute",
@@ -193,52 +157,110 @@ function HeroSection({ ready = false }: { ready?: boolean }) {
         }}
       />
 
-      {/* Amber lines — sweep in from right */}
-      <div
-        style={{
-          position: "absolute",
-          top: "38%",
-          right: 0,
-          width: "48vw",
-          height: "3px",
-          backgroundColor: C.amber,
-          zIndex: 1,
-          pointerEvents: "none",
-          ...anim("heroLineGrow", 0.6, 0.8),
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          top: "calc(38% + 8px)",
-          right: 0,
-          width: "36vw",
-          height: "1.5px",
-          backgroundColor: C.amber,
-          zIndex: 1,
-          pointerEvents: "none",
-          ...anim("heroLineGrow2", 0.75, 0.8),
-        }}
-      />
+      {/* ── Desktop: amber horizontal lines ── */}
+      {!isMobile && (
+        <>
+          <div
+            style={{
+              position: "absolute",
+              top: "38%",
+              right: 0,
+              width: "48vw",
+              height: "3px",
+              backgroundColor: C.amber,
+              zIndex: 1,
+              pointerEvents: "none",
+              ...anim("heroLineGrow", 0.6, 0.8),
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              top: "calc(38% + 8px)",
+              right: 0,
+              width: "36vw",
+              height: "1.5px",
+              backgroundColor: C.amber,
+              zIndex: 1,
+              pointerEvents: "none",
+              ...anim("heroLineGrow2", 0.75, 0.8),
+            }}
+          />
+        </>
+      )}
 
-      {/* Corner brackets — draw in */}
-      {/* top-right H */}
-      <div
-        style={{
-          position: "absolute",
-          top: "3vh",
-          right: "3vw",
-          height: "5vh",
-          zIndex: 1,
-          pointerEvents: "none",
-          borderTop: `2px solid ${C.teal}`,
-          borderRight: `2px solid ${C.teal}`,
-          opacity: 0.55,
-          ...anim("heroBracketH", 0.3, 0.5),
-        }}
-      />
+      {/* ── Mobile: tangent lines from left edge to top edge ── */}
+      {isMobile &&
+        (() => {
+          const TANGENT_LINE_COUNT = 100;
 
-      {/* Ghost 4.0 — pulses subtly */}
+          const CX = 0;
+          const CY = 0;
+          const R = 50;
+
+          const lines = [];
+          for (let i = 0; i < TANGENT_LINE_COUNT; i++) {
+            const angle = 10 + (i / (TANGENT_LINE_COUNT - 1)) * 70;
+            const rad = (angle * Math.PI) / 180;
+
+            const tx = CX + R * Math.cos(rad);
+            const ty = CY - R * Math.sin(rad);
+
+            const dx = -Math.sin(rad);
+            const dy = -Math.cos(rad);
+
+            let t1 = Infinity,
+              t2 = -Infinity;
+            const candidates: number[] = [];
+            if (Math.abs(dx) > 0.001) candidates.push(-tx / dx);
+            if (Math.abs(dy) > 0.001) candidates.push(-ty / dy);
+
+            if (Math.abs(dx) > 0.001) candidates.push((100 - tx) / dx);
+            if (Math.abs(dy) > 0.001) candidates.push((100 - ty) / dy);
+
+            candidates.sort((a, b) => a - b);
+            t2 = candidates[candidates.length - 1];
+            t1 = candidates[0];
+
+            const x1 = tx + t1 * dx;
+            const y1 = ty + t1 * dy;
+            const x2 = tx + t2 * dx;
+            const y2 = ty + t2 * dy;
+
+            lines.push({ x1, y1, x2, y2 });
+          }
+
+          return (
+            <svg
+              style={{
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                zIndex: 1,
+                pointerEvents: "none",
+                opacity: ready ? 0.5 : 0,
+                transition: "opacity 0.8s ease 0.4s",
+              }}
+              viewBox="0 0 100 100"
+              preserveAspectRatio="none"
+            >
+              {lines.map((l, i) => (
+                <line
+                  key={i}
+                  x1={l.x1}
+                  y1={l.y1}
+                  x2={l.x2}
+                  y2={l.y2}
+                  stroke={C.amber}
+                  strokeWidth="0.4"
+                  vectorEffect="non-scaling-stroke"
+                />
+              ))}
+            </svg>
+          );
+        })()}
+      {/* Ghost 4.0 */}
       <div
         style={{
           position: "absolute",
@@ -260,7 +282,7 @@ function HeroSection({ ready = false }: { ready?: boolean }) {
         4.0
       </div>
 
-      {/* Dots — stagger fade in */}
+      {/* Dots */}
       {DOTS.filter((d) => d.x > 50).map((dot, i) => (
         <div
           key={i}
@@ -315,7 +337,7 @@ function HeroSection({ ready = false }: { ready?: boolean }) {
         })}
       </div>
 
-      {/* ── CONTENT ── */}
+      {/* Content */}
       <div
         style={{
           position: "relative",
@@ -336,28 +358,28 @@ function HeroSection({ ready = false }: { ready?: boolean }) {
             alignItems: "center",
             paddingLeft: isMobile ? "6vw" : "7vw",
             paddingRight: isMobile ? "6vw" : "0",
-            paddingBottom: isMobile ? "8vh" : "0",
-            gap: isMobile ? "4vh" : "5vw",
+            paddingBottom: isMobile ? "4vh" : "0",
+            gap: isMobile ? "3vh" : "5vw",
           }}
         >
-          {/* LEFT — calendar only */}
-          <div
-            style={{
-              position: "relative",
-              flex: "0 0 auto",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              width: isMobile
-                ? "min(320px, 82vw)"
-                : "clamp(260px, 32vw, 460px)",
-              ...anim("heroScaleIn", 0.15, 0.9),
-            }}
-          >
-            <DateCalendar embedded />
-          </div>
+          {/* ── CHANGE 2: hide calendar entirely on mobile ── */}
+          {!isMobile && (
+            <div
+              style={{
+                position: "relative",
+                flex: "0 0 auto",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "clamp(220px, 28vw, 420px)",
+                ...anim("heroScaleIn", 0.15, 0.9),
+              }}
+            >
+              <DateCalendar embedded />
+            </div>
+          )}
 
-          {/* RIGHT — text block */}
+          {/* Right: headline */}
           <div
             style={{
               flex: 1,
@@ -369,7 +391,6 @@ function HeroSection({ ready = false }: { ready?: boolean }) {
               maxWidth: isMobile ? "100%" : "48vw",
             }}
           >
-            {/* Edition tag — fade up first */}
             <div
               style={{
                 fontFamily: "'Arcade Classic', monospace",
@@ -388,7 +409,6 @@ function HeroSection({ ready = false }: { ready?: boolean }) {
               Edition 4.0
             </div>
 
-            {/* HACK@ARCH — slide from left */}
             <h1
               style={{
                 fontFamily: "'American' Captain",
@@ -402,7 +422,6 @@ function HeroSection({ ready = false }: { ready?: boolean }) {
             >
               HACK@ARCH
               <br />
-              {/* IS HERE — slight extra delay */}
               <span
                 style={{
                   color: C.teal,
@@ -410,11 +429,10 @@ function HeroSection({ ready = false }: { ready?: boolean }) {
                   ...anim("heroFadeLeft", 0.6, 0.8),
                 }}
               >
-                IS BACK
+                IS HERE
               </span>
             </h1>
 
-            {/* Amber rule — grows out */}
             <div
               style={{
                 height: "3px",
@@ -426,7 +444,6 @@ function HeroSection({ ready = false }: { ready?: boolean }) {
               }}
             />
 
-            {/* Stat pills — pop in staggered */}
             {!isMobile && (
               <div
                 style={{

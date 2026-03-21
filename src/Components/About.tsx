@@ -234,7 +234,7 @@ function About() {
               style={{
                 maxWidth: "560px",
                 fontFamily: "Inria Sans, sans-serif",
-                fontWeight: 400,
+                fontWeight: 700,
                 fontSize: "clamp(0.95rem, 1.2vw, 1.15rem)",
                 lineHeight: 1.75,
                 color: "#3a3228",

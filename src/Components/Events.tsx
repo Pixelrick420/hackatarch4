@@ -24,8 +24,7 @@ function Events() {
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [visible, setVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
-  // sharedParentRef is attached to the section so both windows
-  // use the same bounding box for drag constraints
+
   const sharedParentRef = useRef<HTMLDivElement>(null);
 
   const DOT_SIZE = 6;
@@ -73,7 +72,6 @@ function Events() {
       : { opacity: 0 };
 
   return (
-    // sharedParentRef on the outermost div — full section bounds
     <div
       ref={(el) => {
         (sectionRef as React.MutableRefObject<HTMLDivElement | null>).current =
@@ -272,8 +270,8 @@ function Events() {
             registrationUrl={REGISTRATION_URL}
             title="HACKQUEST"
             parentRef={sharedParentRef}
-            initialX={windowWidth < 900 ? 10 : 20}
-            initialY={windowWidth < 900 ? 10 : 60}
+            initialX={windowWidth < 900 ? 10 : 250}
+            initialY={windowWidth < 900 ? 10 : 50}
           />
           {/*<EventsWindow
             screen={WarRoomScreen}

@@ -6,8 +6,8 @@ interface ScrollingDividerProps {
 }
 
 function ScrollingDivider({
-  text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-  rotationDeg = 2,
+  text = "From a spark to a mark ",
+  rotationDeg = 1,
 }: ScrollingDividerProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -147,12 +147,9 @@ function ScrollingDivider({
             ></div>
             <div style={styles.scrollingTextArea}>
               <div ref={scrollRef} style={styles.scrollingText}>
-                {/* Render enough copies to fill the screen + buffer */}
-                {[...Array(4)].map((_, i) => (
-                  <span key={i} style={styles.textContent}>
-                    {text}
-                  </span>
-                ))}
+                <span style={styles.textContent}>
+                  {Array(40).fill(text).join("  •  ")} •
+                </span>
               </div>
             </div>
             <div

@@ -61,8 +61,8 @@ function HeroSection({ ready = false }: { ready?: boolean }) {
 
   const STATS = [
     { val: "2500+", label: "Registrations" },
+    { val: "300+", label: "Participants" },
     { val: "100+", label: "Colleges" },
-    { val: "₹2.5L", label: "Prize Pool" },
   ];
 
   return (
@@ -414,7 +414,7 @@ function HeroSection({ ready = false }: { ready?: boolean }) {
                     lineHeight: 1.2,
                   }}
                 >
-                  27 · 28 · 29
+                  27 • 28 • 29
                 </span>
               </div>
             )}

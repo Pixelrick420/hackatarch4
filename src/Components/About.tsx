@@ -235,7 +235,7 @@ function About() {
                 maxWidth: "560px",
                 fontFamily: "Inria Sans, sans-serif",
                 fontWeight: 600,
-                fontSize: "clamp(0.95rem, 3vh, 1.45rem)",
+                fontSize: "clamp(0.95rem, 3vh, 1.25rem)",
                 lineHeight: 1.75,
                 letterSpacing: 0.3,
                 color: "#3a3228",

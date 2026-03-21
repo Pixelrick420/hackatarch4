@@ -28,7 +28,7 @@ function HeroSection() {
         { name: 'About Us', url: '#' },
         { name: 'Events', url: '#' },
         { name: 'Sponsors', url: '#' },
-        { name: 'Contact Us', url: '#' },
+        { name: 'Contact Us', url: '#contact' },
     ];
 
     const starImages = ['/star3.png'];

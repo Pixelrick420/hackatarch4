@@ -1,6 +1,7 @@
 import "./App.css";
 import About from "./Components/About";
 import CommunityPartners from "./Components/CommunityPartners";
+import Contact from "./Components/Contact";
 import ScrollingDivider from "./Components/Divider";
 import Events from "./Components/Events";
 import Hero from "./Components/Hero";
@@ -15,6 +16,8 @@ function App() {
       <Hero />
       <ScrollingDivider />
       <About />
+
+      <Contact />
       <Events />
       <Workshops />
       <Sponsors />

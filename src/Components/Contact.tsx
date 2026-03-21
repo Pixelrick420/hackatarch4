@@ -162,7 +162,7 @@ function Contact() {
         <div
           style={{
             gridColumn: "2/3",
-            gridRow: "1/2",
+            gridRow: "4/6",
             padding: "5vh 5vw",
             display: "flex",
             justifyContent: "flex-end",

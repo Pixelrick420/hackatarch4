@@ -51,12 +51,35 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
   const [progress, setProgress] = useState(0);
   const [isSliderDragging, setIsSliderDragging] = useState(false);
   const [screenHovered, setScreenHovered] = useState(false);
+  const [windowW, setWindowW] = useState(window.innerWidth);
 
   const windowRef = useRef<HTMLDivElement>(null);
   const sliderRef = useRef<HTMLDivElement>(null);
   const internalRef = useRef<HTMLDivElement>(null);
 
+  const isMobile = windowW < 600;
+  const expandedWidth = isMobile ? Math.min(480, windowW - 20) : 480;
+  const minimizedWidth = isMobile ? Math.min(176, windowW - 20) : 176;
+  const currentWidth = isMinimized ? minimizedWidth : expandedWidth;
+
+  // Plain function — not memoized, avoids ref-in-deps lint issues
   const getParent = () => parentRefProp?.current ?? internalRef.current;
+
+  // Clamp position inline — plain calculation, no memo needed
+  const parentWidth =
+    parentRefProp?.current?.getBoundingClientRect().width ?? windowW;
+  const maxX = Math.max(0, parentWidth - currentWidth);
+  const clampedPosition = {
+    x: Math.max(0, Math.min(position.x, maxX)),
+    y: Math.max(0, position.y),
+  };
+
+  // Track viewport width — only subscribes to resize, no setState in body
+  useEffect(() => {
+    const onResize = () => setWindowW(window.innerWidth);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
   const handleProgressUpdate = useCallback((p: number) => {
     setProgress(p);
@@ -65,8 +88,7 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
   const progressFromClientX = useCallback((clientX: number) => {
     if (!sliderRef.current) return;
     const rect = sliderRef.current.getBoundingClientRect();
-    const pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-    setProgress(pct);
+    setProgress(Math.max(0, Math.min(1, (clientX - rect.left) / rect.width)));
   }, []);
 
   const handleSliderMouseDown = (e: React.MouseEvent) => {
@@ -76,15 +98,14 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
   };
 
   const handleTitleMouseDown = (e: React.MouseEvent) => {
-    if (windowRef.current) {
-      const parent = getParent();
-      const pr = parent ? parent.getBoundingClientRect() : { left: 0, top: 0 };
-      setDragOffset({
-        x: e.clientX - pr.left - position.x,
-        y: e.clientY - pr.top - position.y,
-      });
-      setIsDragging(true);
-    }
+    if (!windowRef.current) return;
+    const parent = getParent();
+    const pr = parent ? parent.getBoundingClientRect() : { left: 0, top: 0 };
+    setDragOffset({
+      x: e.clientX - pr.left - clampedPosition.x,
+      y: e.clientY - pr.top - clampedPosition.y,
+    });
+    setIsDragging(true);
   };
 
   useEffect(() => {
@@ -128,13 +149,7 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
       document.removeEventListener("mousemove", onMove);
       document.removeEventListener("mouseup", onUp);
     };
-  }, [
-    isDragging,
-    isSliderDragging,
-    dragOffset,
-    progressFromClientX,
-    getParent,
-  ]);
+  }, [isDragging, isSliderDragging, dragOffset, progressFromClientX]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handlePlay = () => setIsPlaying(true);
   const handlePause = () => setIsPlaying(false);
@@ -158,13 +173,17 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
     if (isMinimized) {
       setShowCannotMinimize(true);
       setTimeout(() => setShowCannotMinimize(false), 2000);
-    } else setIsMinimized(true);
+    } else {
+      setIsMinimized(true);
+    }
   };
   const handleMaximize = () => {
     if (!isMinimized) {
       setShowCannotMaximize(true);
       setTimeout(() => setShowCannotMaximize(false), 2000);
-    } else setIsMinimized(false);
+    } else {
+      setIsMinimized(false);
+    }
   };
 
   const atStart = progress <= 0;
@@ -212,9 +231,9 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
         ref={windowRef}
         style={{
           position: "absolute",
-          left: `${position.x}px`,
-          top: `${position.y}px`,
-          width: isMinimized ? "176px" : "480px",
+          left: `${clampedPosition.x}px`,
+          top: `${clampedPosition.y}px`,
+          width: `${currentWidth}px`,
           height: isMinimized ? "auto" : "384px",
           border: "3px solid #444",
           borderRadius: "6px",
@@ -299,7 +318,6 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
             onClick={handleNext}
             title="Next"
           >
-            {" "}
             <ImArrowRight size={20} color={atEnd ? "#aaa" : "#0A3248"} />
           </button>
           <div
@@ -429,7 +447,6 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
                 onClick={handlePrev}
                 title="Previous"
               >
-                {" "}
                 <ImBackward2 size={18} />
               </button>
               {isPlaying ? (
@@ -446,12 +463,10 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
                   onClick={handlePlay}
                   title="Play"
                 >
-                  {" "}
                   <ImPlay2 size={18} color={atEnd ? "#aaa" : "#222"} />
                 </button>
               )}
               <button style={iconBtn(false)} onClick={handleStop} title="Stop">
-                {" "}
                 <ImStop size={18} />
               </button>
               <button
@@ -459,7 +474,6 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
                 onClick={handleNext}
                 title="Next"
               >
-                {" "}
                 <ImForward3 size={18} />
               </button>
               <button
@@ -467,7 +481,6 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
                 onClick={handleGoToEnd}
                 title="Go to end"
               >
-                {" "}
                 <ImNext size={18} />
               </button>
               <div
@@ -493,7 +506,6 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
                   onClick={handleMute}
                   title="Mute"
                 >
-                  {" "}
                   <ImVolumeHigh size={18} />
                 </button>
               )}

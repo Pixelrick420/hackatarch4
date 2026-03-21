@@ -9,6 +9,7 @@ if (typeof document !== "undefined" && !document.getElementById(KF)) {
   s.textContent = `
     @keyframes evUp    { from{opacity:0;transform:translateY(32px)} to{opacity:1;transform:none} }
     @keyframes evScale { from{opacity:0;transform:scale(0.94)}      to{opacity:1;transform:none} }
+    @keyframes regPulse { 0%,100%{box-shadow:0 0 0 0 rgba(58,174,149,0.5)} 50%{box-shadow:0 0 0 8px rgba(58,174,149,0)} }
   `;
   document.head.appendChild(s);
 }
@@ -24,8 +25,9 @@ function Events() {
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [visible, setVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
-
   const sharedParentRef = useRef<HTMLDivElement>(null);
+
+  const isMobile = windowWidth < 600;
 
   const DOT_SIZE = 6;
   const DOT_SPACING = 40;
@@ -70,6 +72,9 @@ function Events() {
           animation: `${name} 0.75s cubic-bezier(0.22,1,0.36,1) ${delay}s both`,
         }
       : { opacity: 0 };
+
+  const windowX = isMobile ? 10 : windowWidth < 900 ? 10 : 250;
+  const windowY = isMobile ? 10 : windowWidth < 900 ? 10 : 50;
 
   return (
     <div
@@ -257,11 +262,12 @@ function Events() {
           </div>
         </div>
 
-        {/* Window area — fixed height so windows have room */}
+        {/* Window area */}
         <div
           style={{
             position: "relative",
-            height: windowWidth < 900 ? "900px" : "500px",
+
+            height: isMobile ? "460px" : windowWidth < 900 ? "900px" : "500px",
             ...a("evScale", 0.25),
           }}
         >
@@ -270,17 +276,54 @@ function Events() {
             registrationUrl={REGISTRATION_URL}
             title="HACKQUEST"
             parentRef={sharedParentRef}
-            initialX={windowWidth < 900 ? 10 : 250}
-            initialY={windowWidth < 900 ? 10 : 50}
+            initialX={windowX}
+            initialY={windowY}
           />
-          {/*<EventsWindow
-            screen={WarRoomScreen}
-            registrationUrl={REGISTRATION_URL}
-            title="WAR ROOM"
-            parentRef={sharedParentRef}
-            initialX={windowWidth < 900 ? 10 : 520}
-            initialY={windowWidth < 900 ? 420 : 60}
-          />*/}
+
+          {/* Mobile register button — sits below the window */}
+          {isMobile && (
+            <a
+              href={REGISTRATION_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                position: "absolute",
+                top: `${384 + windowY + 16}px`,
+                left: "50%",
+                transform: "translateX(-50%)",
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+                backgroundColor: "#0A3248",
+                border: "3px solid #3aae95",
+                borderRadius: "4px",
+                padding: "12px 28px",
+                color: "#3aae95",
+                fontSize: "16px",
+                fontWeight: 900,
+                letterSpacing: "0.18em",
+                fontFamily: "'American Captain', monospace",
+                textDecoration: "none",
+                whiteSpace: "nowrap",
+                animation: visible
+                  ? "regPulse 2.4s ease-in-out infinite"
+                  : "none",
+                cursor: "pointer",
+              }}
+            >
+              {/* Arrow icon */}
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path
+                  d="M2 8h10M8 3l5 5-5 5"
+                  stroke="#3aae95"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              REGISTER NOW
+            </a>
+          )}
         </div>
       </div>
     </div>

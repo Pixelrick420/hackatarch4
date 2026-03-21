@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, useRef } from "react";
 import EventsWindow from "./EventWindow";
-import { HackQuestScreen, WarRoomScreen } from "./EventScreens";
+import { HackQuestScreen } from "./EventScreens";
 
 const KF = "events-kf";
 if (typeof document !== "undefined" && !document.getElementById(KF)) {
@@ -24,6 +24,9 @@ function Events() {
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [visible, setVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
+  // sharedParentRef is attached to the section so both windows
+  // use the same bounding box for drag constraints
+  const sharedParentRef = useRef<HTMLDivElement>(null);
 
   const DOT_SIZE = 6;
   const DOT_SPACING = 40;
@@ -70,8 +73,15 @@ function Events() {
       : { opacity: 0 };
 
   return (
+    // sharedParentRef on the outermost div — full section bounds
     <div
-      ref={sectionRef}
+      ref={(el) => {
+        (sectionRef as React.MutableRefObject<HTMLDivElement | null>).current =
+          el;
+        (
+          sharedParentRef as React.MutableRefObject<HTMLDivElement | null>
+        ).current = el;
+      }}
       style={{
         width: "100%",
         minHeight: "80vh",
@@ -81,7 +91,7 @@ function Events() {
         display: "grid",
         gridTemplateRows: "auto 1fr",
         position: "relative",
-        overflow: "hidden",
+        overflow: "visible",
       }}
     >
       {/* Dot grid */}
@@ -249,30 +259,30 @@ function Events() {
           </div>
         </div>
 
-        {/* Two windows */}
+        {/* Window area — fixed height so windows have room */}
         <div
           style={{
-            display: "flex",
-            flexDirection: windowWidth < 900 ? "column" : "row",
-            gap: "2vw",
-            padding: "0 2vw 3vh",
+            position: "relative",
+            height: windowWidth < 900 ? "900px" : "500px",
             ...a("evScale", 0.25),
           }}
         >
-          <div style={{ flex: 1, height: "60vh" }}>
-            <EventsWindow
-              screen={HackQuestScreen}
-              registrationUrl={REGISTRATION_URL}
-              title="HACKQUEST"
-            />
-          </div>
-          <div style={{ flex: 1, height: "60vh" }}>
-            <EventsWindow
-              screen={WarRoomScreen}
-              registrationUrl={REGISTRATION_URL}
-              title="WAR ROOM"
-            />
-          </div>
+          <EventsWindow
+            screen={HackQuestScreen}
+            registrationUrl={REGISTRATION_URL}
+            title="HACKQUEST"
+            parentRef={sharedParentRef}
+            initialX={windowWidth < 900 ? 10 : 20}
+            initialY={windowWidth < 900 ? 10 : 60}
+          />
+          {/*<EventsWindow
+            screen={WarRoomScreen}
+            registrationUrl={REGISTRATION_URL}
+            title="WAR ROOM"
+            parentRef={sharedParentRef}
+            initialX={windowWidth < 900 ? 10 : 520}
+            initialY={windowWidth < 900 ? 420 : 60}
+          />*/}
         </div>
       </div>
     </div>

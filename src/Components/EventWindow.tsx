@@ -27,14 +27,20 @@ interface EventsWindowProps {
   screen: React.ComponentType<ScreenProps>;
   registrationUrl?: string;
   title?: string;
+  parentRef?: React.RefObject<HTMLDivElement | null>;
+  initialX?: number;
+  initialY?: number;
 }
 
 const EventsWindow: React.FC<EventsWindowProps> = ({
   screen: Screen,
   registrationUrl = "https://unstop.com/hackathons/hackquest-an-18-hour-national-hackathon-hack-at-arch-40-government-engineering-college-gec-thrissur-1662896",
   title = "EVENTS",
+  parentRef: parentRefProp,
+  initialX = 20,
+  initialY = 20,
 }) => {
-  const [position, setPosition] = useState({ x: 80, y: 10 });
+  const [position, setPosition] = useState({ x: initialX, y: initialY });
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [isMinimized, setIsMinimized] = useState(false);
@@ -48,9 +54,10 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
 
   const windowRef = useRef<HTMLDivElement>(null);
   const sliderRef = useRef<HTMLDivElement>(null);
-  const parentRef = useRef<HTMLDivElement>(null);
+  const internalRef = useRef<HTMLDivElement>(null);
 
-  // Called by the screen animation loop
+  const getParent = () => parentRefProp?.current ?? internalRef.current;
+
   const handleProgressUpdate = useCallback((p: number) => {
     setProgress(p);
   }, []);
@@ -70,27 +77,42 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
 
   const handleTitleMouseDown = (e: React.MouseEvent) => {
     if (windowRef.current) {
-      const rect = windowRef.current.getBoundingClientRect();
-      setDragOffset({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+      const parent = getParent();
+      const pr = parent ? parent.getBoundingClientRect() : { left: 0, top: 0 };
+      setDragOffset({
+        x: e.clientX - pr.left - position.x,
+        y: e.clientY - pr.top - position.y,
+      });
       setIsDragging(true);
     }
   };
 
   useEffect(() => {
     const onMove = (e: MouseEvent) => {
-      if (isDragging && windowRef.current && parentRef.current) {
-        const pr = parentRef.current.getBoundingClientRect();
+      if (isDragging && windowRef.current) {
+        const parent = getParent();
         const wr = windowRef.current.getBoundingClientRect();
-        setPosition({
-          x: Math.max(
-            0,
-            Math.min(e.clientX - dragOffset.x - pr.left, pr.width - wr.width),
-          ),
-          y: Math.max(
-            0,
-            Math.min(e.clientY - dragOffset.y - pr.top, pr.height - wr.height),
-          ),
-        });
+        if (parent) {
+          const pr = parent.getBoundingClientRect();
+          setPosition({
+            x: Math.max(
+              0,
+              Math.min(e.clientX - pr.left - dragOffset.x, pr.width - wr.width),
+            ),
+            y: Math.max(
+              0,
+              Math.min(
+                e.clientY - pr.top - dragOffset.y,
+                pr.height - wr.height,
+              ),
+            ),
+          });
+        } else {
+          setPosition({
+            x: Math.max(0, e.clientX - dragOffset.x),
+            y: Math.max(0, e.clientY - dragOffset.y),
+          });
+        }
       }
       if (isSliderDragging) progressFromClientX(e.clientX);
     };
@@ -106,7 +128,13 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
       document.removeEventListener("mousemove", onMove);
       document.removeEventListener("mouseup", onUp);
     };
-  }, [isDragging, isSliderDragging, dragOffset, progressFromClientX]);
+  }, [
+    isDragging,
+    isSliderDragging,
+    dragOffset,
+    progressFromClientX,
+    getParent,
+  ]);
 
   const handlePlay = () => setIsPlaying(true);
   const handlePause = () => setIsPlaying(false);
@@ -171,13 +199,13 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
 
   return (
     <div
-      ref={parentRef}
+      ref={parentRefProp ? undefined : internalRef}
       style={{
-        position: "relative",
-        width: "100%",
-        height: "100%",
+        position: parentRefProp ? "static" : "relative",
+        width: parentRefProp ? 0 : "100%",
+        height: parentRefProp ? 0 : "100%",
         background: "transparent",
-        overflow: "hidden",
+        overflow: "visible",
       }}
     >
       <div
@@ -186,8 +214,8 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
           position: "absolute",
           left: `${position.x}px`,
           top: `${position.y}px`,
-          width: isMinimized ? "220px" : "600px",
-          height: isMinimized ? "auto" : "calc(50vh - 20px)",
+          width: isMinimized ? "176px" : "480px",
+          height: isMinimized ? "auto" : "384px",
           border: "3px solid #444",
           borderRadius: "6px",
           overflow: "hidden",
@@ -195,6 +223,7 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
           transition: "width 0.3s, height 0.3s",
           fontFamily: "'American Captain', monospace",
           userSelect: "none",
+          zIndex: isDragging ? 100 : 10,
         }}
       >
         {/* Title bar */}
@@ -287,7 +316,7 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
           </button>
         </div>
 
-        {/* Screen — clickable */}
+        {/* Screen */}
         <div
           onClick={() => window.open(registrationUrl, "_blank")}
           onMouseEnter={() => setScreenHovered(true)}
@@ -350,7 +379,6 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
               overflow: "hidden",
             }}
           >
-            {/* Scrubber */}
             <div
               ref={sliderRef}
               onMouseDown={handleSliderMouseDown}
@@ -388,7 +416,6 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
                 }}
               />
             </div>
-            {/* Transport */}
             <div style={{ display: "flex", alignItems: "center", gap: "2px" }}>
               <button
                 style={iconBtn(false, atStart)}

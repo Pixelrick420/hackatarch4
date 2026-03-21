@@ -457,7 +457,7 @@ function HeroSection({ ready = false }: { ready?: boolean }) {
                     </span>
                     <span
                       style={{
-                        fontFamily: "Inria Sans, sans-serif",
+                        fontFamily: "'American' Captain",
                         fontSize: "clamp(0.6rem, 0.9vw, 0.75rem)",
                         color: C.tealDark,
                         opacity: 0.7,

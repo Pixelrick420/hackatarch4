@@ -1,551 +1,541 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect, useRef } from 'react';
-import Game from './Game';
-import DateCalendar from './Datecalendar';
+import { useState, useEffect, useRef } from "react";
+import Game from "./Game";
+import DateCalendar from "./Datecalendar";
 
 interface Star {
-    id: number;
-    x: number;
-    y: number;
-    image: string;
-    phase: number;
+  id: number;
+  x: number;
+  y: number;
+  image: string;
+  phase: number;
 }
 
-function HeroSection() {
-    const backgroundColor = '#F6EDC4';
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [isMobile, setIsMobile] = useState(false);
-    const [isGameOpen, setIsGameOpen] = useState(false);
-    const [stars, setStars] = useState<Star[]>([]);
-    const nextStarIdRef = useRef(0);
-    const animationRef = useRef<number | null>(null);
+const C = {
+  bg: "#F6EDC4",
+  navy: "#0A3248",
+  cream: "#F5E6C8",
+  amber: "#E5AD58",
+  teal: "#3aae95",
+  tealDark: "#005061",
+};
 
-    const MAX_STARS = 2;
-    const MAX_STAR_SIZE = 60;
-    const STAR_GROWTH_SPEED = 0.02;
+const DOTS = Array.from({ length: 18 }, (_, i) => {
+  const tx = Math.sin(i * 127.1) * 43758.5453;
+  const ty = Math.sin(i * 311.7) * 43758.5453;
+  return {
+    x: (tx - Math.floor(tx)) * 86 + 7,
+    y: (ty - Math.floor(ty)) * 86 + 7,
+    r: 2.5 + (i % 3) * 1.5,
+  };
+});
 
-    const navLinks = [
-        { name: 'Home', url: '#' },
-        { name: 'About Us', url: '#' },
-        { name: 'Events', url: '#' },
-        { name: 'Sponsors', url: '#' },
-        { name: 'Contact Us', url: '#contact' },
-    ];
+// Inject keyframes once at module level
+const STYLE_ID = "hero-keyframes";
+if (typeof document !== "undefined" && !document.getElementById(STYLE_ID)) {
+  const s = document.createElement("style");
+  s.id = STYLE_ID;
+  s.textContent = `
+    @keyframes heroFadeUp {
+      from { opacity: 0; transform: translateY(32px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes heroFadeLeft {
+      from { opacity: 0; transform: translateX(-40px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes heroFadeRight {
+      from { opacity: 0; transform: translateX(40px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes heroScaleIn {
+      from { opacity: 0; transform: scale(0.88); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    @keyframes heroBracketH {
+      from { width: 0; }
+      to   { width: 5vw; }
+    }
+    @keyframes heroBracketV {
+      from { height: 0; }
+      to   { height: 5vh; }
+    }
+    @keyframes heroLineGrow {
+      from { width: 0; opacity: 0; }
+      to   { opacity: 0.45; }
+    }
+    @keyframes heroLineGrow2 {
+      from { width: 0; opacity: 0; }
+      to   { opacity: 0.2; }
+    }
+    @keyframes heroPulse {
+      0%, 100% { opacity: 0.04; }
+      50%       { opacity: 0.07; }
+    }
+    @keyframes heroStatPop {
+      from { opacity: 0; transform: translateY(16px) scale(0.92); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes heroRuleGrow {
+      from { width: 0; }
+    }
+  `;
+  document.head.appendChild(s);
+}
 
-    const starImages = ['/star3.png'];
+function HeroSection({ ready = false }: { ready?: boolean }) {
+  const [isGameOpen, setIsGameOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1000);
+  const [stars, setStars] = useState<Star[]>([]);
+  const animationRef = useRef<number | null>(null);
+  const MAX_STAR_SIZE = 60;
+  const STAR_GROWTH_SPD = 0.02;
 
-    useEffect(() => {
-        const handleResize = () => {
-            setIsMobile(window.innerWidth < 1000);
-            if (window.innerWidth >= 1000) {
-                setIsMenuOpen(false);
-            }
-        };
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < 1000);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
-        handleResize();
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
-
-    useEffect(() => {
-        const spawnStar = () => {
-            setStars((prev) => {
-                if (prev.length >= MAX_STARS) {
-                    return prev;
-                }
-
-                const randomImage = starImages[Math.floor(Math.random() * starImages.length)];
-                const star: Star = {
-                    id: nextStarIdRef.current,
-                    x: Math.random() * 100,
-                    y: Math.random() * 100,
-                    image: randomImage,
-                    phase: 0,
-                };
-                nextStarIdRef.current++;
-                return [...prev, star];
-            });
-        };
-
-        const spawnInterval = setInterval(spawnStar, 1500);
-        for (let i = 0; i < MAX_STARS / 2; i++) {
-            setTimeout(spawnStar, i * 500);
-        }
-
-        return () => clearInterval(spawnInterval);
-    }, [starImages]);
-
-    useEffect(() => {
-        const animateStars = () => {
-            setStars((prev) =>
-                prev
-                    .map((star) => ({
-                        ...star,
-                        phase: star.phase + STAR_GROWTH_SPEED,
-                    }))
-                    .filter((star) => star.phase < 2)
-            );
-            animationRef.current = requestAnimationFrame(animateStars);
-        };
-
-        animationRef.current = requestAnimationFrame(animateStars);
-
-        return () => {
-            if (animationRef.current) {
-                cancelAnimationFrame(animationRef.current);
-            }
-        };
-    }, []);
-
-    const getStarSize = (phase: number) => {
-        if (phase < 1) {
-            return phase * MAX_STAR_SIZE;
-        } else {
-            return (2 - phase) * MAX_STAR_SIZE;
-        }
+  useEffect(() => {
+    const animate = () => {
+      setStars((prev) =>
+        prev
+          .map((s) => ({ ...s, phase: s.phase + STAR_GROWTH_SPD }))
+          .filter((s) => s.phase < 2),
+      );
+      animationRef.current = requestAnimationFrame(animate);
     };
+    animationRef.current = requestAnimationFrame(animate);
+    return () => {
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+    };
+  }, []);
 
-    return (
+  const starSize = (phase: number) =>
+    phase < 1 ? phase * MAX_STAR_SIZE : (2 - phase) * MAX_STAR_SIZE;
+
+  // Shared animation helper
+  const anim = (
+    name: string,
+    delay: number,
+    duration = 0.7,
+    easing = "cubic-bezier(0.22,1,0.36,1)",
+    fill: "both" | "forwards" = "both",
+  ): React.CSSProperties =>
+    ready
+      ? { animation: `${name} ${duration}s ${easing} ${delay}s ${fill}` }
+      : { opacity: 0 };
+
+  const STATS = [
+    { val: "2500+", label: "Registrations" },
+    { val: "500+", label: "Participants" },
+    { val: "100+", label: "Colleges" },
+  ];
+
+  return (
+    <div
+      style={{
+        width: "100%",
+        height: "100vh",
+        position: "relative",
+        backgroundColor: C.bg,
+        overflow: "hidden",
+        margin: 0,
+        padding: 0,
+      }}
+    >
+      {/* ── BACKGROUND ── */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          backgroundImage: "url(/herobackground.png)",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          opacity: 0.1,
+          zIndex: 1,
+        }}
+      />
+
+      {/* Teal circle — bottom left, floats in */}
+      <div
+        style={{
+          position: "absolute",
+          bottom: "-18vw",
+          left: "-10vw",
+          width: "52vw",
+          height: "52vw",
+          borderRadius: "50%",
+          backgroundColor: C.tealDark,
+          opacity: ready ? 0.12 : 0,
+          transition: "opacity 1.2s ease 0.2s",
+          zIndex: 1,
+          pointerEvents: "none",
+        }}
+      />
+
+      {/* Navy rotated square — top right */}
+      <div
+        style={{
+          position: "absolute",
+          top: "-4vw",
+          right: "-4vw",
+          width: "32vw",
+          height: "32vw",
+          borderRadius: "4vw",
+          backgroundColor: C.navy,
+          opacity: ready ? 0.08 : 0,
+          transform: `rotate(${ready ? 18 : 30}deg)`,
+          transition:
+            "opacity 1s ease 0.1s, transform 1.4s cubic-bezier(0.22,1,0.36,1) 0.1s",
+          zIndex: 1,
+          pointerEvents: "none",
+        }}
+      />
+
+      {/* Amber lines — sweep in from right */}
+      <div
+        style={{
+          position: "absolute",
+          top: "38%",
+          right: 0,
+          width: "48vw",
+          height: "3px",
+          backgroundColor: C.amber,
+          zIndex: 1,
+          pointerEvents: "none",
+          ...anim("heroLineGrow", 0.6, 0.8),
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          top: "calc(38% + 8px)",
+          right: 0,
+          width: "36vw",
+          height: "1.5px",
+          backgroundColor: C.amber,
+          zIndex: 1,
+          pointerEvents: "none",
+          ...anim("heroLineGrow2", 0.75, 0.8),
+        }}
+      />
+
+      {/* Corner brackets — draw in */}
+      {/* top-right H */}
+      <div
+        style={{
+          position: "absolute",
+          top: "3vh",
+          right: "3vw",
+          height: "5vh",
+          zIndex: 1,
+          pointerEvents: "none",
+          borderTop: `2px solid ${C.teal}`,
+          borderRight: `2px solid ${C.teal}`,
+          opacity: 0.55,
+          ...anim("heroBracketH", 0.3, 0.5),
+        }}
+      />
+
+      {/* Ghost 4.0 — pulses subtly */}
+      <div
+        style={{
+          position: "absolute",
+          right: "-2vw",
+          top: "50%",
+          transform: "translateY(-50%)",
+          fontFamily: "'American' Captain",
+          fontSize: "clamp(14rem, 28vw, 36rem)",
+          color: C.navy,
+          lineHeight: 1,
+          userSelect: "none",
+          pointerEvents: "none",
+          zIndex: 1,
+          animation: ready ? "heroPulse 4s ease-in-out 1s infinite" : "none",
+          opacity: ready ? 0.04 : 0,
+          transition: "opacity 1.5s ease 0.8s",
+        }}
+      >
+        4.0
+      </div>
+
+      {/* Dots — stagger fade in */}
+      {DOTS.filter((d) => d.x > 50).map((dot, i) => (
         <div
-            style={{
-                width: '100%',
-                height: '100vh',
-                position: 'relative',
-                backgroundColor: backgroundColor,
-                overflow: 'hidden',
-                margin: 0,
-                padding: 0,
-            }}
+          key={i}
+          style={{
+            position: "absolute",
+            left: `${dot.x}%`,
+            top: `${dot.y}%`,
+            width: dot.r,
+            height: dot.r,
+            borderRadius: "50%",
+            backgroundColor: C.navy,
+            transform: "translate(-50%,-50%)",
+            pointerEvents: "none",
+            zIndex: 1,
+            opacity: ready ? 0.13 : 0,
+            transition: `opacity 0.5s ease ${0.4 + i * 0.04}s`,
+          }}
+        />
+      ))}
+
+      {/* Stars */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          pointerEvents: "none",
+          zIndex: 2,
+        }}
+      >
+        {stars.map((star) => {
+          const sz = starSize(star.phase);
+          return (
+            <img
+              key={star.id}
+              src={star.image}
+              alt=""
+              style={{
+                position: "absolute",
+                left: `${star.x}%`,
+                top: `${star.y}%`,
+                width: sz,
+                height: sz,
+                objectFit: "contain",
+                transform: "translate(-50%, -50%)",
+                opacity: star.phase < 1 ? star.phase : 2 - star.phase,
+              }}
+              onError={(e) => {
+                (e.target as HTMLImageElement).style.display = "none";
+              }}
+            />
+          );
+        })}
+      </div>
+
+      {/* ── CONTENT ── */}
+      <div
+        style={{
+          position: "relative",
+          zIndex: 4,
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <div style={{ height: "clamp(56px, 8vh, 80px)", flexShrink: 0 }} />
+
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: isMobile ? "column" : "row",
+            alignItems: "center",
+            paddingLeft: isMobile ? "6vw" : "7vw",
+            paddingRight: isMobile ? "6vw" : "0",
+            paddingBottom: isMobile ? "8vh" : "0",
+            gap: isMobile ? "4vh" : "5vw",
+          }}
         >
-            {/* Semi-transparent background image */}
+          {/* LEFT — calendar only */}
+          <div
+            style={{
+              position: "relative",
+              flex: "0 0 auto",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: isMobile
+                ? "min(320px, 82vw)"
+                : "clamp(260px, 32vw, 460px)",
+              ...anim("heroScaleIn", 0.15, 0.9),
+            }}
+          >
+            <DateCalendar embedded />
+          </div>
+
+          {/* RIGHT — text block */}
+          <div
+            style={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: isMobile ? "center" : "flex-start",
+              textAlign: isMobile ? "center" : "left",
+              maxWidth: isMobile ? "100%" : "48vw",
+            }}
+          >
+            {/* Edition tag — fade up first */}
             <div
+              style={{
+                fontFamily: "'Arcade Classic', monospace",
+                fontSize: "clamp(0.6rem, 1vw, 0.8rem)",
+                letterSpacing: "0.3em",
+                color: C.teal,
+                marginBottom: "1rem",
+                border: `1px solid ${C.teal}`,
+                display: "inline-block",
+                padding: "2px 8px",
+                borderRadius: "2px",
+                backgroundColor: "rgba(58,174,149,0.06)",
+                ...anim("heroFadeUp", 0.3, 0.6),
+              }}
+            >
+              Edition 4.0
+            </div>
+
+            {/* HACK@ARCH — slide from left */}
+            <h1
+              style={{
+                fontFamily: "'American' Captain",
+                fontSize: "clamp(3rem, 7vw, 8rem)",
+                color: C.navy,
+                margin: 0,
+                lineHeight: 0.9,
+                letterSpacing: "0.02em",
+                ...anim("heroFadeLeft", 0.45, 0.8),
+              }}
+            >
+              HACK@ARCH
+              <br />
+              {/* IS HERE — slight extra delay */}
+              <span
                 style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%',
-                    backgroundImage: 'url(/herobackground.png)',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    backgroundRepeat: 'no-repeat',
-                    opacity: 0.3,
-                    zIndex: 1,
+                  color: C.teal,
+                  display: "inline-block",
+                  ...anim("heroFadeLeft", 0.6, 0.8),
                 }}
+              >
+                IS BACK
+              </span>
+            </h1>
+
+            {/* Amber rule — grows out */}
+            <div
+              style={{
+                height: "3px",
+                backgroundColor: C.amber,
+                margin: isMobile ? "1.5rem auto" : "1.5rem 0",
+                borderRadius: "2px",
+                ...anim("heroRuleGrow", 0.75, 0.6, "ease-out"),
+                width: isMobile ? "40%" : "clamp(60px, 8vw, 140px)",
+              }}
             />
 
-            {/* Twinkling Stars */}
-            <div
-                style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%',
-                    pointerEvents: 'none',
-                    zIndex: 2,
-                }}
-            >
-                {stars.map((star) => {
-                    const size = getStarSize(star.phase);
-                    return (
-                        <img
-                            key={star.id}
-                            src={star.image}
-                            alt="star"
-                            style={{
-                                position: 'absolute',
-                                left: `${star.x}%`,
-                                top: `${star.y}%`,
-                                width: `${size}px`,
-                                height: `${size}px`,
-                                objectFit: 'contain',
-                                transform: 'translate(-50%, -50%)',
-                                opacity: star.phase < 1 ? star.phase : 2 - star.phase,
-                            }}
-                            onError={(e) => {
-                                (e.target as HTMLImageElement).style.display = 'none';
-                            }}
-                        />
-                    );
-                })}
-            </div>
-
-            {/* Right Hero Image - Only visible on desktop */}
+            {/* Stat pills — pop in staggered */}
             {!isMobile && (
-                <div
-                    style={{
-                        position: 'absolute',
-                        right: 0,
-                        top: 0,
-                        height: '100vh',
-                        display: 'flex',
-                        justifyContent: 'flex-end',
-                        alignItems: 'flex-start',
-                        zIndex: 3,
-                    }}
-                >
-                    <img
-                        src="/heroimage.png"
-                        alt="Hero"
-                        style={{
-                            height: '100%',
-                            width: 'auto',
-                            objectFit: 'contain',
-                        }}
-                        onError={(e) => {
-                            console.error('Failed to load heroimage.png');
-                            (e.target as HTMLImageElement).style.display = 'none';
-                        }}
-                    />
-                </div>
-            )}
-
-            {/* Content container */}
-            <div
+              <div
                 style={{
-                    position: 'relative',
-                    zIndex: 4,
-                    width: '100%',
-                    height: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
+                  display: "flex",
+                  gap: "1rem",
+                  flexWrap: "wrap",
+                  marginTop: "0.5rem",
                 }}
-            >
-                {/* Navigation */}
-                {isMobile ? (
-                    <>
-                        {/* Hamburger Menu Button */}
-                        <div
-                            style={{
-                                position: 'absolute',
-                                top: '3vh',
-                                left: '3vh',
-                                zIndex: 10,
-                            }}
-                        >
-                            <button
-                                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                                style={{
-                                    backgroundColor: '#F5E6C8',
-                                    border: '2px solid black',
-                                    borderRadius: '1vh',
-                                    padding: '10px',
-                                    cursor: 'pointer',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: '5px',
-                                    width: '40px',
-                                    height: '40px',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    boxShadow: '4px 4px 0 #E5AD58',
-                                }}
-                            >
-                                <div
-                                    style={{
-                                        width: '24px',
-                                        height: '3px',
-                                        backgroundColor: 'black',
-                                        borderRadius: '2px',
-                                    }}
-                                />
-                                <div
-                                    style={{
-                                        width: '24px',
-                                        height: '3px',
-                                        backgroundColor: 'black',
-                                        borderRadius: '2px',
-                                    }}
-                                />
-                                <div
-                                    style={{
-                                        width: '24px',
-                                        height: '3px',
-                                        backgroundColor: 'black',
-                                        borderRadius: '2px',
-                                    }}
-                                />
-                            </button>
-                        </div>
-
-                        {/* Mobile Menu Dropdown */}
-                        {isMenuOpen && (
-                            <div
-                                style={{
-                                    position: 'absolute',
-                                    top: '10vh',
-                                    left: '3vh',
-                                    backgroundColor: '#F5E6C8',
-                                    border: '2px solid black',
-                                    borderRadius: '2vh',
-                                    padding: '2vh',
-                                    boxShadow: '4px 4px 0 #E5AD58',
-                                    zIndex: 10,
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: '1vh',
-                                }}
-                            >
-                                {navLinks.map((link, index) => (
-                                    <a
-                                        key={index}
-                                        href={link.url}
-                                        onClick={() => setIsMenuOpen(false)}
-                                        style={{
-                                            textDecoration: 'none',
-                                            color: '#333',
-                                            fontWeight: '500',
-                                            fontSize: '2.5vh',
-                                            padding: '1vh 2vh',
-                                            borderRadius: '1vh',
-                                            backgroundColor: 'transparent',
-                                            transition: 'background-color 0.3s ease',
-                                            whiteSpace: 'nowrap',
-                                        }}
-                                        onMouseEnter={(e) => {
-                                            e.currentTarget.style.backgroundColor = '#F0DDB8';
-                                        }}
-                                        onMouseLeave={(e) => {
-                                            e.currentTarget.style.backgroundColor = 'transparent';
-                                        }}
-                                    >
-                                        {link.name}
-                                    </a>
-                                ))}
-                            </div>
-                        )}
-                    </>
-                ) : (
-                    <nav
-                        style={{
-                            display: 'flex',
-                            justifyContent: 'space-evenly',
-                            alignItems: 'center',
-                            gap: '15px',
-                            padding: '3vh 2vh',
-                        }}
-                    >
-                        {navLinks.map((link, index) => (
-                            <a
-                                key={index}
-                                href={link.url}
-                                style={{
-                                    textDecoration: 'none',
-                                    color: '#333',
-                                    fontWeight: '500',
-                                    fontSize: '5vh',
-                                    padding: '10px 24px',
-                                    border: '2px solid  black',
-                                    borderRadius: '3vh',
-                                    backgroundColor: '#F5E6C8',
-                                    transition: 'all 0.3s ease',
-                                    whiteSpace: 'nowrap',
-                                    boxShadow: '4px 4px 0 #E5AD58',
-                                }}
-                                onMouseEnter={(e) => {
-                                    e.currentTarget.style.backgroundColor = '#F0DDB8';
-                                    e.currentTarget.style.transform = 'translateY(-2px)';
-                                    e.currentTarget.style.boxShadow = '8px 8px 0 #E5AD58';
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.currentTarget.style.backgroundColor = '#F5E6C8';
-                                    e.currentTarget.style.transform = 'translateY(0)';
-                                    e.currentTarget.style.boxShadow = '4px 4px 0 #E5AD58';
-                                }}
-                            >
-                                {link.name}
-                            </a>
-                        ))}
-                    </nav>
-                )}
-
-                {/* ── Title overlay — top-left, below navbar ── */}
-                <div
+              >
+                {STATS.map((stat, i) => (
+                  <div
+                    key={stat.val}
                     style={{
-                        position: 'absolute',
-                        top: isMobile ? '12vh' : '14vh',
-                        left: isMobile ? '3vh' : '5vw',
-                        zIndex: 6,
-                        animation: 'jumpIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both',
-                        pointerEvents: 'none',
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
+                      backgroundColor: C.cream,
+                      border: `2px solid ${C.navy}`,
+                      borderRadius: "8px",
+                      padding: "0.5rem 1rem",
+                      boxShadow: `3px 3px 0 ${C.amber}`,
+                      minWidth: "80px",
+                      ...anim("heroStatPop", 0.9 + i * 0.12, 0.55),
                     }}
-                >
-                    <div
-                        style={{
-                            fontFamily: "'American' Captain",
-                            fontSize: 'clamp(5rem, 6vw, 8rem)',
-                            letterSpacing: '0.05em',
-                            paddingTop:'1vh',
-                            lineHeight: 1,
-
-                            color: '#0A3248',
-                            textShadow: '3px 3px 0 rgba(229,173,88,0.55)',
-                        }}
+                  >
+                    <span
+                      style={{
+                        fontFamily: "'American' Captain",
+                        fontSize: "clamp(1.1rem, 1.8vw, 1.6rem)",
+                        color: C.navy,
+                        lineHeight: 1,
+                      }}
                     >
-                        HACK@ARCH 4.0 <br></br>IS HERE !!!
-                    </div>
-                </div>
-
-                {/* Images Container */}
-                <div
-                    style={{
-                        flex: 1,
-                        display: 'flex',
-                        justifyContent: isMobile ? 'center' : 'flex-start',
-                        alignItems: 'center',
-                        paddingLeft: isMobile ? '0' : '5vw',
-                        paddingTop: isMobile ? '10vh' : '0',
-                    }}
-                >
-                    {/* Logo + Calendar overlay wrapper */}
-                    <div
-                        style={{
-                            position: 'relative',
-                            flex: '0 0 auto',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            // Larger on mobile so logo fills more of the screen
-                            maxWidth: isMobile ? '88%' : '40%',
-                        }}
+                      {stat.val}
+                    </span>
+                    <span
+                      style={{
+                        fontFamily: "Inria Sans, sans-serif",
+                        fontSize: "clamp(0.6rem, 0.9vw, 0.75rem)",
+                        color: C.tealDark,
+                        opacity: 0.7,
+                        letterSpacing: "0.05em",
+                        marginTop: "2px",
+                      }}
                     >
-                        {/* Logo — z:1 */}
-                        <img
-                            src="/logo.png"
-                            alt="Logo"
-                            style={{
-                                maxWidth: '100%',
-                                maxHeight: '60vh',
-                                width: 'auto',
-                                height: 'auto',
-                                objectFit: 'contain',
-                                position: 'relative',
-                                zIndex: 1,
-                            }}
-                            onError={(e) => {
-                                (e.target as HTMLImageElement).style.display = 'none';
-                            }}
-                        />
-
-                        {/* Calendar — centered over logo, 80% of logo width, z:2 */}
-                        <div
-                            style={{
-                                position: 'absolute',
-                                top: '50%',
-                                left: '50%',
-                                transform: 'translate(-50%, -50%)',
-                                width: '80%',
-                                zIndex: 2,
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                            }}
-                        >
-                            <DateCalendar embedded />
-                        </div>
-                    </div>
-                </div>
-
-                
-
-                {/* 
-                <div
-                    style={{
-                        position: 'absolute',
-                        bottom: '5vh',
-                        left: '30%',
-                        transform: 'translateX(-50%)',
-                        zIndex: 5,
-                    }}
-                >
-                    <button
-                        onClick={() => setIsGameOpen(true)}
-                        style={{
-                            backgroundColor: '#F5E6C8',
-                            border: '2px solid black',
-                            borderRadius: '2vh',
-                            padding: '2vh 4vh',
-                            fontSize: '3vh',
-                            fontWeight: '600',
-                            color: '#333',
-                            cursor: 'pointer',
-                            boxShadow: '4px 4px 0 #E5AD58',
-                            transition: 'all 0.3s ease',
-                        }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.backgroundColor = '#F0DDB8';
-                            e.currentTarget.style.transform = 'translateY(-2px)';
-                            e.currentTarget.style.boxShadow = '6px 6px 0 #E5AD58';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor = '#F5E6C8';
-                            e.currentTarget.style.transform = 'translateY(0)';
-                            e.currentTarget.style.boxShadow = '4px 4px 0 #E5AD58';
-                        }}
-                    >
-                        GAME
-                    </button>
-                </div> */}
-            </div>
-
-            {isGameOpen && (
-                <div
-                    style={{
-                        position: 'fixed',
-                        top: 0,
-                        left: 0,
-                        width: '100vw',
-                        height: '100vh',
-                        backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        zIndex: 100,
-                    }}
-                    onClick={() => setIsGameOpen(false)}
-                >
-                    <div
-                        style={{
-                            backgroundColor: '#F5E6C8',
-                            border: '3px solid black',
-                            borderRadius: '2vh',
-                            padding: '3vh',
-                            maxWidth: '90vw',
-                            maxHeight: '90vh',
-                            overflow: 'auto',
-                            position: 'relative',
-                            boxShadow: '8px 8px 0 #E5AD58',
-                        }}
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        <button
-                            onClick={() => setIsGameOpen(false)}
-                            style={{
-                                position: 'absolute',
-                                top: '2vh',
-                                right: '2vh',
-                                backgroundColor: '#E5AD58',
-                                border: '2px solid black',
-                                borderRadius: '50%',
-                                width: '40px',
-                                height: '40px',
-                                fontSize: '20px',
-                                fontWeight: 'bold',
-                                cursor: 'pointer',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                            }}
-                        >
-                            ×
-                        </button>
-                        <Game />
-                    </div>
-                </div>
+                      {stat.label}
+                    </span>
+                  </div>
+                ))}
+              </div>
             )}
+          </div>
         </div>
-    );
+      </div>
+
+      {isGameOpen && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            backgroundColor: "rgba(0,0,0,0.7)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 100,
+          }}
+          onClick={() => setIsGameOpen(false)}
+        >
+          <div
+            style={{
+              backgroundColor: C.cream,
+              border: "3px solid black",
+              borderRadius: "2vh",
+              padding: "3vh",
+              maxWidth: "90vw",
+              maxHeight: "90vh",
+              overflow: "auto",
+              position: "relative",
+              boxShadow: `8px 8px 0 ${C.amber}`,
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setIsGameOpen(false)}
+              style={{
+                position: "absolute",
+                top: "2vh",
+                right: "2vh",
+                backgroundColor: C.amber,
+                border: "2px solid black",
+                borderRadius: "50%",
+                width: 40,
+                height: 40,
+                fontSize: 20,
+                fontWeight: "bold",
+                cursor: "pointer",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              ×
+            </button>
+            <Game />
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default HeroSection;

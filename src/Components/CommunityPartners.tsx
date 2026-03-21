@@ -84,12 +84,6 @@ function CommunityPartners() {
     { name: "telegram", icon: "/telegram.png", url: "#" },
   ];
 
-  const footerLinks = [
-    { name: "Home", url: "#" },
-    { name: "Contact us", url: "#" },
-    { name: "About us", url: "#" },
-  ];
-
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentLogoIndex((prev) => (prev + 1) % communityLogos.length);
@@ -358,27 +352,7 @@ function CommunityPartners() {
                 flexWrap: "wrap",
                 padding: "0 2vw",
               }}
-            >
-              {footerLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.url}
-                  style={{
-                    color: "white",
-                    textDecoration: "none",
-                    fontFamily: "'American' Captain",
-                    fontSize: "clamp(1rem, 2vw, 1.2rem)",
-                    letterSpacing: "0.05em",
-                    transition: "opacity 0.3s",
-                  }}
-                  onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.7")}
-                  onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
-                >
-                  {link.name}
-                </a>
-              ))}
-            </div>
-
+            ></div>
             <div
               style={{
                 display: "flex",

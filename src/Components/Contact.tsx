@@ -38,53 +38,11 @@ function Contact() {
         overflow: "hidden",
       }}
     >
-      {/* Edit this to change the number of diagonal lines */}
-      {(() => {
-        const DIAGONAL_LINE_COUNT = 100;
-        // Each line is parallel at 45°: from (0, offset) on the left edge
-        // to (offset, 0) on the top edge. Offset steps from near-0 to near-corner.
-        const lines = Array.from({ length: DIAGONAL_LINE_COUNT }).map(
-          (_, i) => {
-            const offset = ((i + 1) / (DIAGONAL_LINE_COUNT + 1)) * 100;
-            return (
-              <line
-                key={i}
-                x1={0}
-                y1={offset}
-                x2={offset}
-                y2={1}
-                stroke="#3aae95"
-                strokeWidth="1"
-                opacity="0.8"
-                vectorEffect="non-scaling-stroke"
-              />
-            );
-          },
-        );
-        return (
-          <svg
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              pointerEvents: "none",
-              zIndex: 1,
-            }}
-            viewBox="0 0 100 100"
-            preserveAspectRatio="none"
-          >
-            {lines}
-          </svg>
-        );
-      })()}
-
       {/* top-right corner bracket */}
       <div
         style={{
           position: "absolute",
-          top: "2vh",
+          top: "3vh",
           right: "2vw",
           width: "6vw",
           height: "6vh",
@@ -183,7 +141,7 @@ function Contact() {
         <div
           style={{
             gridColumn: "1/2",
-            gridRow: "2/3",
+            gridRow: "1/2",
             padding: "5vh 5vw",
             display: "flex",
             alignItems: "flex-end",

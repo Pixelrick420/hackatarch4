@@ -1,346 +1,288 @@
-import { useEffect, useState, useMemo, useRef } from 'react';
+import { useEffect, useState, useRef } from "react";
+
+const COLORS = {
+  bg: "#F6EDC4",
+  navy: "#0A3248",
+  teal: "#005061",
+  accent: "#3aae95",
+  green: "#7AA58A",
+  cream: "#F8EDCD",
+};
+
+// Deterministic dot positions so they don't jump on re-render
+const DOTS = Array.from({ length: 50 }, (_, i) => {
+  // simple pseudo-random from index
+  const t1 = Math.sin(i * 127.1) * 43758.5453;
+  const t2 = Math.sin(i * 311.7) * 43758.5453;
+  return {
+    x: (t1 - Math.floor(t1)) * 90 + 5, // 5–95%
+    y: (t2 - Math.floor(t2)) * 90 + 5, // 5–95%
+    r: 3 + (i % 3) * 1.5, // 3, 4.5, or 6px
+  };
+});
 
 function About() {
-    const colors = {
-        background: '#F6EDC4',
-        polygon: '#0A3248',
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [isHovering, setIsHovering] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-        textDark: '#0A3248',
-        buttonGreen: '#7AA58A',
-        buttonBorder: '#000000',
-    };
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-    const containerRef = useRef<HTMLDivElement>(null);
-    const [isHovering, setIsHovering] = useState(false);
+  const isMobile = windowWidth < 900;
 
-    useEffect(() => {
-        const handleResize = () => {
-            setWindowWidth(window.innerWidth);
-        };
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
+  return (
+    <div
+      ref={containerRef}
+      style={{
+        width: "100%",
+        height: isMobile ? "auto" : "100vh",
+        minHeight: isMobile ? "100vh" : "unset",
+        margin: 0,
+        padding: 0,
+        position: "relative",
+        overflow: "hidden",
+        backgroundColor: COLORS.bg,
+        boxSizing: "border-box",
+      }}
+    >
+      {/* ── Large navy circle (top-right) with logo centered inside ── */}
+      <div
+        style={{
+          position: "absolute",
+          top: "-10vw",
+          right: "-20vw",
+          width: "60vw",
+          height: "60vw",
+          borderRadius: "50%",
+          backgroundColor: COLORS.navy,
+          opacity: 0.09,
+          pointerEvents: "none",
+          zIndex: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      />
+      {/* Logo centered in the circle — same position/size as the circle */}
+      <div
+        style={{
+          position: "absolute",
+          top: "-10vw",
+          right: "-20vw",
+          width: "60vw",
+          height: "60vw",
+          borderRadius: "50%",
+          pointerEvents: "none",
+          zIndex: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          overflow: "hidden",
+        }}
+      >
+        <img
+          src="/logo.png"
+          alt=""
+          style={{
+            width: "55%",
+            height: "55%",
+            objectFit: "contain",
+            opacity: 0.6,
+            display: "block",
+          }}
+          onError={(e) => {
+            (e.target as HTMLImageElement).style.display = "none";
+          }}
+        />
+      </div>
 
-    const bluePolygonPoints = useMemo(() => {
-        const basePoints =
-            windowWidth > 900
-                ? [
-                      [-0.1, 0.15],
-                      [0.45, 0.35],
-                      [0.45, 0.55],
-                      [0.38, 0.65],
-                      [-0.1, 0.55],
-                  ]
-                : [
-                      [-0.1, 0.15],
-                      [0.84, 0.35],
-                      [0.94, 0.92],
-                      [-0.1, 0.98],
-                  ];
+      {/* ── Random black dots ── */}
+      {DOTS.map((dot, i) => (
+        <div
+          key={i}
+          style={{
+            position: "absolute",
+            left: `${dot.x}%`,
+            top: `${dot.y}%`,
+            width: `${dot.r}px`,
+            height: `${dot.r}px`,
+            borderRadius: "50%",
+            backgroundColor: "#3AAE95",
+            pointerEvents: "none",
+            zIndex: 0,
+            transform: "translate(-50%, -50%)",
+          }}
+        />
+      ))}
 
-        const aspectRatio = windowWidth / window.innerHeight;
-        const compensationFactor = aspectRatio < 1 ? 1 / aspectRatio : 1;
-
-        const adjustedPoints = basePoints.map(([x, y]) => {
-            const adjustedX = x * (aspectRatio > 1 ? 1 : compensationFactor);
-            return `${adjustedX},${y}`;
-        });
-
-        return adjustedPoints.join(' ');
-    }, [windowWidth]);
-
-    return (
-        <>
-            <div
-                ref={containerRef}
-                style={{
-                    width: '100%',
-                    height: '100vh',
-                    minHeight: '150vh',
-                    margin: 0,
-                    padding: 0,
-                    position: 'relative',
-                    overflow: 'hidden',
-                    backgroundColor: colors.background,
-                    fontFamily: 'sans-serif',
-                }}
-            >
-                <svg
-                    style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '30vh',
-                        zIndex: 1,
-                    }}
-                    viewBox="0 0 100 100"
-                    preserveAspectRatio="none"
-                >
-                    {Array.from({ length: 6 }).map((_, i) => {
-                        const pieceHeight = 100 / 6;
-                        const yStart = i * pieceHeight;
-                        const highlightPercent = 90 - i * 15;
-                        const highlightHeight = (highlightPercent / 100) * pieceHeight;
-                        const mainHeight = pieceHeight - highlightHeight;
-
-                        return (
-                            <g key={i}>
-                                <rect
-                                    x="0"
-                                    y={yStart}
-                                    width="100"
-                                    height={mainHeight}
-                                    fill="rgba(0,0,0,0)"
-                                />
-                                <rect
-                                    x="0"
-                                    y={yStart + mainHeight}
-                                    width="100"
-                                    height={highlightHeight}
-                                    fill={colors.polygon}
-                                />
-                            </g>
-                        );
-                    })}
-                </svg>
-                {/* <div
-            style={{
-                    position: 'relative',
-                    minHeight: '1vh',
-                    paddingTop: '20vh',
-                }}>
-          </div> */}
-                <svg
-                    style={{
-                        position: 'absolute',
-                        top: 100,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                        zIndex: 1,
-                        pointerEvents: 'none',
-                    }}
-                    viewBox="0 0 1 1"
-                    preserveAspectRatio="none"
-                >
-                    <polygon
-                        points={bluePolygonPoints}
-                        fill={colors.polygon}
-                        stroke="black"
-                        strokeWidth="0.02"
-                    />
-                </svg>
-
-                <div
-                    style={{
-                        position: 'absolute',
-                        top: '10%',
-                        right: '-5%',
-                        fontFamily: "'American' Captain",
-                        fontSize: '25vw',
-                        color: 'rgba(0,0,0,0.3)',
-                        zIndex: 0,
-                        pointerEvents: 'none',
-                        lineHeight: 0.8,
-                        textAlign: 'right',
-                    }}
-                >
-                    <img
-                        src="/logo.png"
-                        alt="Logo"
-                        style={{
-                            maxWidth: '100%',
-                            maxHeight: '60vh',
-                            width: 'auto',
-                            height: 'auto',
-                            objectFit: 'contain',
-                        }}
-                        onError={(e) => {
-                            console.error('Failed to load logo.png');
-                            (e.target as HTMLImageElement).style.display = 'none';
-                        }}
-                    />
-                </div>
-
-                <div
-                    style={{
-                        position: 'relative',
-                        zIndex: 3,
-                        height: '100%',
-                        width: '100%',
-                        display: 'flex',
-                        flexDirection: 'column',
-                    }}
-                >
-                    <div
-                        style={{
-                            display: 'flex',
-                            flex: 1,
-                            flexDirection: windowWidth < 900 ? 'column' : 'row',
-                            padding: '5vh 5vw',
-                            height: '100%',
-                            boxSizing: 'border-box',
-                        }}
-                    >
-                        <div
-                            style={{
-                                flex: 1,
-                                position: 'relative',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                minHeight: windowWidth < 900 ? '30vh' : 'auto',
-                            }}
-                        >
-                            <img
-                                src="/cassette-group.png"
-                                alt="Retro Cassettes"
-                                style={{
-                                    width: 'clamp(300px, 30vw, 600px)',
-                                    height: 'auto',
-                                    animation: 'jumpIn 1s ease-out forwards',
-                                    filter: 'drop-shadow(10px 10px 0px rgba(0,0,0,0.5))',
-                                }}
-                            />
-                        </div>
-
-                        <div
-                            style={{
-                                flex: 1,
-                                display: 'flex',
-                                flexDirection: 'column',
-                                justifyContent: 'center',
-                                alignItems: windowWidth < 900 ? 'center' : 'flex-start',
-                                textAlign: windowWidth < 900 ? 'center' : 'left',
-                                paddingLeft: windowWidth < 900 ? 0 : '4vw',
-                            }}
-                        >
-                            <h1
-                                style={{
-                                    fontFamily: "'American' Captain",
-                                    fontSize: 'clamp(3rem, 7vw, 8rem)',
-                                    color: windowWidth < 900 ? colors.background : colors.polygon,
-                                    margin: 0,
-                                    lineHeight: 0.9,
-                                    letterSpacing: '0.02em',
-                                }}
-                            >
-                                ABOUT
-                                <br />
-                                HACK@ARCH
-                            </h1>
-
-                            <div
-                                style={{
-                                    marginTop: '4vh',
-                                    maxWidth: '600px',
-
-                                    fontFamily: 'Inria Sans !important',
-                                    fontStyle: 'normal',
-                                    fontWeight: '400',
-                                    fontSize: '21px',
-                                    lineHeight: '31px',
-                                    color: windowWidth < 900 ? '#F8EDCD' : '#333',
-                                }}
-                            >
-                                <p>
-                                    Hack@Arch is a prestigious event for tech-enthusiast students
-                                    from across the country to showcase their skills and gain
-                                    hands-on experience, Across its previous editions, Hack@Arch has
-                                    recorded 2,500+ registrations from across India, generated
-                                    300,000+ digital impressions, and distributed over ₹2.5 lakhs in
-                                    prize money.
-                                </p>
-                                <p>
-                                    Notably, Hack@Arch 3.0 alone witnessed 1,100+ registrations,
-                                    with participation from students representing 100+ colleges,
-                                    establishing the event as a credible and impactful student-led
-                                    initiative.
-                                </p>
-                            </div>
-
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '2rem',
-                                    marginTop: '5vh',
-                                    flexWrap: 'wrap',
-                                    justifyContent: windowWidth < 900 ? 'center' : 'flex-start',
-                                }}
-                            >
-                                <button
-                                    onMouseEnter={() => setIsHovering(true)}
-                                    onMouseLeave={() => setIsHovering(false)}
-                                    style={{
-                                        backgroundColor: colors.buttonGreen,
-                                        border: '4px solid black',
-                                        padding: '10px 40px',
-                                        fontFamily: "'American' Captain",
-                                        fontSize: '1.5rem',
-                                        cursor: 'pointer',
-                                        position: 'relative',
-                                        transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-                                        transform: isHovering
-                                            ? 'translate(-4px, -4px)'
-                                            : 'translate(0, 0)',
-                                        boxShadow: isHovering
-                                            ? '6px 6px 0px black'
-                                            : '0px 0px 0px black',
-                                    }}
-                                >
-                                    EXPLORE
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <img
-                        src="/star.png"
-                        alt="Star"
-                        style={{
-                            position: 'absolute',
-                            bottom: '5vh',
-                            left: '5vw',
-                            width: '5vh',
-                            height: 'auto',
-                        }}
-                    />
-                    {/* Footer / Bottom Elements
+      {/* ── Main content ── */}
+      <div
+        style={{
+          position: "relative",
+          zIndex: 2,
+          height: isMobile ? "auto" : "100%",
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          boxSizing: "border-box",
+          padding: isMobile ? "14vh 6vw 8vh" : "0 6vw",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: isMobile ? "column" : "row",
+            alignItems: "center",
+            gap: isMobile ? "6vh" : "4vw",
+            width: "100%",
+            maxWidth: "1400px",
+            margin: "0 auto",
+          }}
+        >
+          {/* LEFT — cassette image */}
           <div
             style={{
-              position: "absolute",
-              bottom: 0,
-              left: 0,
-              width: "90%",
-              pointerEvents: "none",
-              zIndex: 4,
-              height: 0, 
+              flex: "0 0 auto",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
-            {/* Spinning CD
-                        <img 
-                            src="/cd-disc.png" 
-                            alt="CD"
-                            style={{
-                                position: 'absolute',
-                                bottom: '-10vh', 
-                                left: '10vw',
-                                width: '25vh',
-                                height: '25vh',
-                                opacity: 0.8,
-                                zIndex: 100,
-                            }}
-                        /> }
+            <img
+              src="/cassette-group.png"
+              alt="Retro Cassettes"
+              style={{
+                width: isMobile
+                  ? "clamp(220px, 60vw, 400px)"
+                  : "clamp(280px, 28vw, 520px)",
+                height: "auto",
+                animation: "jumpIn 1s ease-out forwards",
+                filter: "drop-shadow(8px 8px 0px rgba(0,0,0,0.45))",
+                display: "block",
+              }}
+            />
+          </div>
 
-            
-          </div> 
-          */}
-                </div>
+          {/* RIGHT — text */}
+          <div
+            style={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: isMobile ? "center" : "flex-start",
+              textAlign: isMobile ? "center" : "left",
+            }}
+          >
+            <h1
+              style={{
+                fontFamily: "'American' Captain",
+                fontSize: "clamp(2rem, 10vh, 9vh)",
+                color: COLORS.navy,
+                margin: 0,
+              }}
+            >
+              HACK@ARCH
+            </h1>
+
+            {/* Accent underline */}
+            <div
+              style={{
+                width: isMobile ? "40%" : "clamp(60px, 6vw, 120px)",
+                height: "4px",
+                backgroundColor: COLORS.accent,
+                margin: isMobile ? "2rem auto 2rem" : "2rem 0",
+                borderRadius: "2px",
+              }}
+            />
+
+            <div
+              style={{
+                maxWidth: "560px",
+                fontFamily: "Inria Sans, sans-serif",
+                fontWeight: 400,
+                fontSize: "clamp(0.95rem, 1.2vw, 1.15rem)",
+                lineHeight: 1.75,
+                color: "#3a3228",
+              }}
+            >
+              <p style={{ margin: "0 0 1.2em" }}>
+                Hack@Arch is a prestigious event for tech-enthusiast students
+                from across the country to showcase their skills and gain
+                hands-on experience. Across its previous editions, Hack@Arch has
+                recorded 2,500+ registrations from across India, generated
+                300,000+ digital impressions, and distributed over ₹2.5 lakhs in
+                prize money.
+              </p>
+              <p style={{ margin: 0 }}>
+                Notably, Hack@Arch 3.0 alone witnessed 1,100+ registrations,
+                with participation from students representing 100+ colleges,
+                establishing the event as a credible and impactful student-led
+                initiative.
+              </p>
             </div>
-        </>
-    );
+
+            <div
+              style={{
+                marginTop: "2.5rem",
+                display: "flex",
+                gap: "1.2rem",
+                flexWrap: "wrap",
+                justifyContent: isMobile ? "center" : "flex-start",
+              }}
+            >
+              <button
+                onMouseEnter={() => setIsHovering(true)}
+                onMouseLeave={() => setIsHovering(false)}
+                style={{
+                  backgroundColor: COLORS.green,
+                  border: "3px solid black",
+                  padding: "10px 40px",
+                  fontFamily: "'American' Captain",
+                  fontSize: "1.4rem",
+                  letterSpacing: "0.05em",
+                  cursor: "pointer",
+                  transition: "transform 0.18s ease, box-shadow 0.18s ease",
+                  transform: isHovering
+                    ? "translate(-4px, -4px)"
+                    : "translate(0, 0)",
+                  boxShadow: isHovering
+                    ? "6px 6px 0px black"
+                    : "0px 0px 0px black",
+                  outline: "none",
+                  color: "#fff",
+                }}
+              >
+                EXPLORE
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Star decoration ── */}
+      <img
+        src="/star.png"
+        alt=""
+        style={{
+          position: "absolute",
+          bottom: "4vh",
+          left: "4vw",
+          width: "5vh",
+          height: "auto",
+          zIndex: 2,
+          opacity: 0.7,
+        }}
+        onError={(e) => {
+          (e.target as HTMLImageElement).style.display = "none";
+        }}
+      />
+    </div>
+  );
 }
 
 export default About;

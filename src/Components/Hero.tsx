@@ -364,10 +364,9 @@ function HeroSection({ ready = false }: { ready?: boolean }) {
                   ...anim("heroFadeLeft", 0.6, 0.8),
                 }}
               >
-                IS HERE
+                IS BACK
               </span>
             </h1>
-
             <div
               style={{
                 height: "3px",
@@ -378,6 +377,47 @@ function HeroSection({ ready = false }: { ready?: boolean }) {
                 width: isMobile ? "40%" : "clamp(60px, 8vw, 140px)",
               }}
             />
+            {isMobile && (
+              <div
+                style={{
+                  marginTop: "1rem",
+                  padding: "0.8rem 1.2rem",
+                  border: `1.5px solid ${C.teal}`,
+                  borderRadius: "8px",
+                  background: "rgba(58,174,149,0.08)",
+                  display: "inline-flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: "0.2rem",
+                  boxShadow: `3px 3px 0 ${C.amber}`,
+                  ...anim("heroFadeUp", 0.9, 0.6),
+                }}
+              >
+                <span
+                  style={{
+                    fontFamily: "'Arcade Classic', monospace",
+                    fontSize: "0.6rem",
+                    letterSpacing: "0.25em",
+                    color: C.tealDark,
+                    opacity: 0.8,
+                  }}
+                >
+                  MARCH
+                </span>
+
+                <span
+                  style={{
+                    fontFamily: "'American' Captain",
+                    fontSize: "clamp(1.2rem, 4vw, 1.6rem)",
+                    color: C.navy,
+                    letterSpacing: "0.08em",
+                    lineHeight: 1.2,
+                  }}
+                >
+                  27 · 28 · 29
+                </span>
+              </div>
+            )}
 
             {!isMobile && (
               <div

@@ -318,7 +318,7 @@ function CommunityPartners() {
                 style={{
                   width: "min(40vh, 60vw)",
                   height: "min(40vh, 60vw)",
-                  backgroundColor: "rgba(0, 0, 0, 0.05)",
+                  backgroundColor: "rgba(0, 0, 0, 0.2)",
                   borderRadius: "3vh",
                   display: "flex",
                   justifyContent: "center",

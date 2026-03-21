@@ -234,10 +234,12 @@ function About() {
               style={{
                 maxWidth: "560px",
                 fontFamily: "Inria Sans, sans-serif",
-                fontWeight: 700,
-                fontSize: "clamp(0.95rem, 1.2vw, 1.15rem)",
+                fontWeight: 600,
+                fontSize: "clamp(0.95rem, 3vh, 1.45rem)",
                 lineHeight: 1.75,
+                letterSpacing: 0.3,
                 color: "#3a3228",
+                textTransform: "none",
               }}
             >
               <p style={{ margin: "0 0 1.2em" }}>

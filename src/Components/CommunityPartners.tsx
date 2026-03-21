@@ -89,7 +89,6 @@ function CommunityPartners() {
     "/community1.png",
     "/community2.png",
     "/community3.png",
-    "/community4.png",
   ];
   const socialLinks = [
     {
@@ -318,7 +317,7 @@ function CommunityPartners() {
                 style={{
                   width: "min(40vh, 60vw)",
                   height: "min(40vh, 60vw)",
-                  backgroundColor: "rgba(0, 0, 0, 0.2)",
+                  backgroundColor: "rgba(0, 0, 0, 0.05)",
                   borderRadius: "3vh",
                   display: "flex",
                   justifyContent: "center",

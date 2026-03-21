@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useRef } from 'react';
 import Game from './Game';
+import DateCalendar from './Datecalendar';
 
 interface Star {
     id: number;
@@ -359,6 +360,33 @@ function HeroSection() {
                     </nav>
                 )}
 
+                {/* ── Title overlay — top-left, below navbar ── */}
+                <div
+                    style={{
+                        position: 'absolute',
+                        top: isMobile ? '12vh' : '14vh',
+                        left: isMobile ? '3vh' : '5vw',
+                        zIndex: 6,
+                        animation: 'jumpIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both',
+                        pointerEvents: 'none',
+                    }}
+                >
+                    <div
+                        style={{
+                            fontFamily: "'American' Captain",
+                            fontSize: 'clamp(5rem, 6vw, 8rem)',
+                            letterSpacing: '0.05em',
+                            paddingTop:'1vh',
+                            lineHeight: 1,
+
+                            color: '#0A3248',
+                            textShadow: '3px 3px 0 rgba(229,173,88,0.55)',
+                        }}
+                    >
+                        HACK@ARCH 4.0 <br></br>IS HERE !!!
+                    </div>
+                </div>
+
                 {/* Images Container */}
                 <div
                     style={{
@@ -370,16 +398,19 @@ function HeroSection() {
                         paddingTop: isMobile ? '10vh' : '0',
                     }}
                 >
-                    {/* Left Logo */}
+                    {/* Logo + Calendar overlay wrapper */}
                     <div
                         style={{
+                            position: 'relative',
                             flex: '0 0 auto',
                             display: 'flex',
                             justifyContent: 'center',
                             alignItems: 'center',
-                            maxWidth: isMobile ? '70%' : '40%',
+                            // Larger on mobile so logo fills more of the screen
+                            maxWidth: isMobile ? '88%' : '40%',
                         }}
                     >
+                        {/* Logo — z:1 */}
                         <img
                             src="/logo.png"
                             alt="Logo"
@@ -389,14 +420,34 @@ function HeroSection() {
                                 width: 'auto',
                                 height: 'auto',
                                 objectFit: 'contain',
+                                position: 'relative',
+                                zIndex: 1,
                             }}
                             onError={(e) => {
-                                console.error('Failed to load logo.png');
                                 (e.target as HTMLImageElement).style.display = 'none';
                             }}
                         />
+
+                        {/* Calendar — centered over logo, 80% of logo width, z:2 */}
+                        <div
+                            style={{
+                                position: 'absolute',
+                                top: '50%',
+                                left: '50%',
+                                transform: 'translate(-50%, -50%)',
+                                width: '80%',
+                                zIndex: 2,
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                            }}
+                        >
+                            <DateCalendar embedded />
+                        </div>
                     </div>
                 </div>
+
+                
 
                 {/* 
                 <div

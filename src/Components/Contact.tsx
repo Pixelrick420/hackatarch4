@@ -44,8 +44,8 @@ function Contact() {
   }, []);
 
   const leads = [
-    { name: "Dharshana KS - Arch.ai Lead", phone: "+91 98765 43211" },
-    { name: "Sreemrudu KP - TinkerHub GECT Lead", phone: "+91 98765 43210" },
+    { name: "Dharshana KS - Arch.ai Lead", phone: "+91 70122 54737" },
+    { name: "Sreemrudu KP - TinkerHub GECT Lead", phone: "+91 94008 71045" },
   ];
 
   const cardStyle: React.CSSProperties = {

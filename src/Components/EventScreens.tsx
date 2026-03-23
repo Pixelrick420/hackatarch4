@@ -27,7 +27,7 @@ interface ScreenProps {
 }
 
 const SLIDE_DURATION_SECS = 5;
-const TOTAL_SLIDES = 4;
+const TOTAL_SLIDES = 3;
 
 const HQ_PHASES = [
   { end: 1 / 18, color: C.teal },
@@ -501,77 +501,77 @@ function WRSlideTimer({ progress }: { progress: number }) {
   );
 }
 
-function WRSlideFormat() {
-  const items = [
-    { color: WR.gold, label: "IDEA SHORTLISTING" },
-    { color: WR.olive, label: "PROTOTYPE & PITCH" },
-    { color: WR.rust, label: "CUSTOMER REVIEW" },
-    { color: WR.gold, label: "DEBATE & FINAL PITCH" },
-  ];
-  return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        height: "100%",
-        padding: "10px 40px",
-      }}
-    >
-      <div
-        style={{
-          fontSize: "11px",
-          fontWeight: 900,
-          color: WR.gold,
-          letterSpacing: ".18em",
-          marginBottom: "14px",
-        }}
-      >
-        PHASES
-      </div>
-      {items.map(({ color, label }) => (
-        <div
-          key={label}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "12px",
-            marginBottom: "10px",
-          }}
-        >
-          <div
-            style={{
-              width: "4px",
-              height: "20px",
-              background: color,
-              borderRadius: "2px",
-              flexShrink: 0,
-            }}
-          />
-          <div
-            style={{
-              fontSize: "13px",
-              fontWeight: 900,
-              color,
-              letterSpacing: ".06em",
-            }}
-          >
-            {label}
-          </div>
-          <div
-            style={{
-              flex: 1,
-              height: "3px",
-              borderRadius: "2px",
-              background: WR.border,
-              opacity: 0.7,
-            }}
-          />
-        </div>
-      ))}
-    </div>
-  );
-}
+// function WRSlideFormat() {
+//   const items = [
+//     { color: WR.gold, label: "IDEA SHORTLISTING" },
+//     { color: WR.olive, label: "PROTOTYPE & PITCH" },
+//     { color: WR.rust, label: "CUSTOMER REVIEW" },
+//     { color: WR.gold, label: "DEBATE & FINAL PITCH" },
+//   ];
+//   return (
+//     <div
+//       style={{
+//         display: "flex",
+//         flexDirection: "column",
+//         justifyContent: "center",
+//         height: "100%",
+//         padding: "10px 40px",
+//       }}
+//     >
+//       <div
+//         style={{
+//           fontSize: "11px",
+//           fontWeight: 900,
+//           color: WR.gold,
+//           letterSpacing: ".18em",
+//           marginBottom: "14px",
+//         }}
+//       >
+//         PHASES
+//       </div>
+//       {items.map(({ color, label }) => (
+//         <div
+//           key={label}
+//           style={{
+//             display: "flex",
+//             alignItems: "center",
+//             gap: "12px",
+//             marginBottom: "10px",
+//           }}
+//         >
+//           <div
+//             style={{
+//               width: "4px",
+//               height: "20px",
+//               background: color,
+//               borderRadius: "2px",
+//               flexShrink: 0,
+//             }}
+//           />
+//           <div
+//             style={{
+//               fontSize: "13px",
+//               fontWeight: 900,
+//               color,
+//               letterSpacing: ".06em",
+//             }}
+//           >
+//             {label}
+//           </div>
+//           <div
+//             style={{
+//               flex: 1,
+//               height: "3px",
+//               borderRadius: "2px",
+//               background: WR.border,
+//               opacity: 0.7,
+//             }}
+//           />
+//         </div>
+//       ))}
+//     </div>
+//   );
+// }
 
 function WRSlideJourney({ progress }: { progress: number }) {
   const colors = [
@@ -1103,8 +1103,8 @@ export function WarRoomScreen({
         <div style={{ flex: 1, overflow: "hidden" }}>
           {currentSlide === 0 && <WRSlideHero />}
           {currentSlide === 1 && <WRSlideTimer progress={liveProgress} />}
-          {currentSlide === 2 && <WRSlideFormat />}
-          {currentSlide === 3 && <WRSlideJourney progress={liveProgress} />}
+          {/*{currentSlide === 2 && <WRSlideFormat />}*/}
+          {currentSlide === 2 && <WRSlideJourney progress={liveProgress} />}
         </div>
         <div
           style={{

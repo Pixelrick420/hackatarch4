@@ -17,8 +17,7 @@ if (typeof document !== "undefined" && !document.getElementById(KF)) {
 
 const HQ_URL =
   "https://unstop.com/hackathons/hackquest-an-18-hour-national-hackathon-hack-at-arch-40-government-engineering-college-gec-thrissur-1662896";
-const WR_URL =
-  "https://unstop.com/college-fests/hack-at-arch-40-government-engineering-college-gec-thrissur-452159";
+const WR_URL = "https://forms.gle/aHt51iB6DuixbJpu6";
 
 function Events() {
   const backgroundColor = "#F6EDC4";

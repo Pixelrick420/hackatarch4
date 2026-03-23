@@ -86,24 +86,24 @@ function CommunityPartners() {
   }, [windowWidth]);
 
   const communityLogos = [
-    "/community1.png",
-    "/community2.png",
-    "/community3.png",
+    "/community1.webp",
+    "/community2.webp",
+    "/community3.webp",
   ];
   const socialLinks = [
     {
       name: "linkedin",
-      icon: "/linkedin.png",
+      icon: "/linkedin.webp",
       url: "https://www.linkedin.com/in/hack-at-arch-4a7b26238/",
     },
     {
       name: "instagram",
-      icon: "/instagram.png",
+      icon: "/instagram.webp",
       url: "https://www.instagram.com/hack_at_arch/",
     },
     {
       name: "unstop",
-      icon: "/unstop.png",
+      icon: "/unstop.webp",
       url: "https://unstop.com/college-fests/hack-at-arch-40-government-engineering-college-gec-thrissur-452159",
     },
   ];
@@ -259,7 +259,7 @@ function CommunityPartners() {
             {clouds.map((cloud) => (
               <img
                 key={cloud.id}
-                src="/cloud.png"
+                src="/cloud.webp"
                 alt="cloud"
                 style={{
                   position: "absolute",

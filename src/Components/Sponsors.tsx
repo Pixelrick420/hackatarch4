@@ -23,7 +23,7 @@ interface SponsorsProps {
 }
 
 const Sponsors: React.FC<SponsorsProps> = ({
-  cassetteImage = "/casette.png",
+  cassetteImage = "/casette.webp",
 }) => {
   const [showCassette, setShowCassette] = useState(true);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
@@ -183,7 +183,7 @@ const Sponsors: React.FC<SponsorsProps> = ({
               style={{
                 padding: isSmallScreen ? "16px 8px" : "40px 20px",
                 background: "#005061",
-                backgroundImage: `url('/filter.png')`,
+                backgroundImage: `url('/filter.webp')`,
                 backgroundSize: "contain",
                 display: "grid",
                 gridTemplateColumns: showCassette ? "1fr 1fr" : "1fr",
@@ -306,7 +306,7 @@ const Sponsors: React.FC<SponsorsProps> = ({
                     aria-label="Previous"
                   >
                     <img
-                      src="/back.png"
+                      src="/back.webp"
                       alt="Previous"
                       style={{
                         width: "100%",
@@ -343,7 +343,7 @@ const Sponsors: React.FC<SponsorsProps> = ({
                     aria-label={isPlaying ? "Pause" : "Play"}
                   >
                     <img
-                      src={"/play.png"}
+                      src={"/play.webp"}
                       alt={"Play"}
                       style={{
                         width: "100%",
@@ -378,7 +378,7 @@ const Sponsors: React.FC<SponsorsProps> = ({
                     aria-label="Next"
                   >
                     <img
-                      src="/forward.png"
+                      src="/forward.webp"
                       alt="Next"
                       style={{
                         width: "100%",

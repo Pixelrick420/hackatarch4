@@ -116,7 +116,7 @@ function About() {
         }}
       >
         <img
-          src="/logo.png"
+          src="/logo.webp"
           alt=""
           style={{
             width: "55%",
@@ -185,7 +185,7 @@ function About() {
             }}
           >
             <img
-              src="/cassette-group.png"
+              src="/cassette-group.webp"
               alt="Retro Cassettes"
               style={{
                 width: isMobile
@@ -303,7 +303,7 @@ function About() {
       </div>
 
       <img
-        src="/star.png"
+        src="/star.webp"
         alt=""
         style={{
           position: "absolute",

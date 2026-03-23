@@ -186,7 +186,7 @@ function DateCalendar({ embedded = false }: DateCalendarProps) {
         }}
       >
         <img
-          src="/logo.png"
+          src="/logo.webp"
           alt=""
           style={{
             width: "75%",

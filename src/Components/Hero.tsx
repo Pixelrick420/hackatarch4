@@ -83,7 +83,7 @@ function HeroSection({ ready = false }: { ready?: boolean }) {
         style={{
           position: "absolute",
           inset: 0,
-          backgroundImage: "url(/herobackground.png)",
+          backgroundImage: "url(/herobackground.webp)",
           backgroundSize: "cover",
           backgroundPosition: "center",
           opacity: 0.1,

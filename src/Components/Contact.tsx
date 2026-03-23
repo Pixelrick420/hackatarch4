@@ -134,7 +134,7 @@ function Contact() {
             (_, i) => (
               <img
                 key={i}
-                src="/x.png"
+                src="/x.webp"
                 alt=""
                 style={{ width: "2vh", height: "auto", objectFit: "contain" }}
               />
@@ -169,7 +169,7 @@ function Contact() {
           }}
         >
           <img
-            src="/star.png"
+            src="/star.webp"
             alt="Star"
             style={{ width: "50px", height: "auto", objectFit: "contain" }}
             onError={(e) => {
@@ -187,7 +187,7 @@ function Contact() {
           }}
         >
           <img
-            src="/star.png"
+            src="/star.webp"
             alt="Star"
             style={{
               width: "50px",

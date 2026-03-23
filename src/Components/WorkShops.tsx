@@ -52,7 +52,7 @@ function SpinningRing() {
             }}
           >
             <img
-              src="/trapezoid.png"
+              src="/trapezoid.webp"
               alt=""
               style={{ width: "100%", height: "100%", objectFit: "contain" }}
             />
@@ -170,7 +170,12 @@ export default function Workshops() {
   const containerRef = useRef<HTMLDivElement>(null);
   const MAX_NOTES = 10;
   const [containerWidth, setContainerWidth] = useState(0);
-  const noteImages = ["/note1.png", "/note2.png", "/note3.png", "/note4.png"];
+  const noteImages = [
+    "/note1.webp",
+    "/note2.webp",
+    "/note3.webp",
+    "/note4.webp",
+  ];
 
   useEffect(() => {
     const handleResize = () => {
@@ -320,7 +325,7 @@ export default function Workshops() {
               opacity: 0.6,
             }}
           >
-            <img src="/workshopimage.png" alt="" />
+            <img src="/workshopimage.webp" alt="" />
           </div>
         )}
       </div>
@@ -349,7 +354,7 @@ export default function Workshops() {
             (_, i) => (
               <img
                 key={i}
-                src="/x.png"
+                src="/x.webp"
                 alt=""
                 style={{ width: "2vh", height: "auto", objectFit: "contain" }}
               />

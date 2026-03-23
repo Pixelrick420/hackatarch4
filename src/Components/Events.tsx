@@ -77,9 +77,9 @@ function Events() {
         }
       : { opacity: 0 };
 
-  const hqX = isNarrowDesktop ? 10 : 60;
+  const hqX = isNarrowDesktop ? 10 : 80;
   const hqY = isNarrowDesktop ? 10 : 50;
-  const wrX = isNarrowDesktop ? 10 : 560;
+  const wrX = isNarrowDesktop ? 10 : 660;
   const wrY = isNarrowDesktop ? 420 : 60;
   const windowAreaHeight = isNarrowDesktop ? "880px" : "540px";
 

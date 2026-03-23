@@ -490,10 +490,10 @@ function WRSlideTimer({ progress }: { progress: number }) {
         }}
       >
         <span style={{ fontSize: "11px", fontWeight: 900, color: WR.gold }}>
-          8 PM MAR
+          8 PM MAR 27
         </span>
         <span style={{ fontSize: "11px", fontWeight: 900, color: WR.rust }}>
-          10 AM +1
+          10 AM MAR 28
         </span>
       </div>
       <Lines count={1} opacity={0.35} color={WR.border} />

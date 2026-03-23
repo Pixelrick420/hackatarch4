@@ -27,7 +27,8 @@ interface ScreenProps {
 }
 
 const SLIDE_DURATION_SECS = 5;
-const TOTAL_SLIDES = 3;
+const TOTAL_SLIDES_WAR_ROOM = 3;
+const TOTAL_SLIDES_HACK_QUEST = 4;
 
 const HQ_PHASES = [
   { end: 1 / 18, color: C.teal },
@@ -713,7 +714,7 @@ export function HackQuestScreen({
         slideTimerRef.current += dt;
         if (slideTimerRef.current >= SLIDE_DURATION_SECS) {
           slideTimerRef.current = 0;
-          setCurrentSlide((s) => (s + 1) % TOTAL_SLIDES);
+          setCurrentSlide((s) => (s + 1) % TOTAL_SLIDES_HACK_QUEST);
         }
       } else {
         lastTsRef.current = null;
@@ -834,7 +835,7 @@ export function HackQuestScreen({
             HACKQUEST
           </span>
           <div style={{ display: "flex", gap: "5px", alignItems: "center" }}>
-            {Array.from({ length: TOTAL_SLIDES }).map((_, i) => (
+            {Array.from({ length: TOTAL_SLIDES_HACK_QUEST }).map((_, i) => (
               <div
                 key={i}
                 onClick={() => setCurrentSlide(i)}
@@ -978,7 +979,7 @@ export function WarRoomScreen({
         slideTimerRef.current += dt;
         if (slideTimerRef.current >= SLIDE_DURATION_SECS) {
           slideTimerRef.current = 0;
-          setCurrentSlide((s) => (s + 1) % TOTAL_SLIDES);
+          setCurrentSlide((s) => (s + 1) % TOTAL_SLIDES_WAR_ROOM);
         }
       } else {
         lastTsRef.current = null;
@@ -1008,10 +1009,10 @@ export function WarRoomScreen({
   }, [onProgressUpdate]);
 
   const ticker = [
-    { text: "DOMAIN BID OPENS", color: WR.gold, icon: "◈" },
-    { text: "INVESTOR PITCH LIVE", color: WR.teal, icon: "▲" },
-    { text: "CUSTOMER REVIEW INCOMING", color: WR.rust, icon: "⚑" },
-    { text: "GECT EXCLUSIVE", color: WR.olive, icon: "★" },
+    { text: "MARKET IS UP", color: WR.gold, icon: "◈" },
+    { text: "RECESSION INCOMING", color: WR.teal, icon: "▲" },
+    { text: "RUN YOUR BUSINESS", color: WR.rust, icon: "⚑" },
+    { text: "STOCKS ARE GOING DOWN", color: WR.olive, icon: "★" },
   ];
   const tickerItems = [...ticker, ...ticker];
 
@@ -1084,7 +1085,7 @@ export function WarRoomScreen({
             WAR ROOM
           </span>
           <div style={{ display: "flex", gap: "5px", alignItems: "center" }}>
-            {Array.from({ length: TOTAL_SLIDES }).map((_, i) => (
+            {Array.from({ length: TOTAL_SLIDES_WAR_ROOM }).map((_, i) => (
               <div
                 key={i}
                 onClick={() => setCurrentSlide(i)}
@@ -1103,7 +1104,6 @@ export function WarRoomScreen({
         <div style={{ flex: 1, overflow: "hidden" }}>
           {currentSlide === 0 && <WRSlideHero />}
           {currentSlide === 1 && <WRSlideTimer progress={liveProgress} />}
-          {/*{currentSlide === 2 && <WRSlideFormat />}*/}
           {currentSlide === 2 && <WRSlideJourney progress={liveProgress} />}
         </div>
         <div

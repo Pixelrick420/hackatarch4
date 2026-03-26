@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import Workshop from "./WorkShop";
 
 const background = "#F6EDC4";
 const navy = "#0A3248";
@@ -297,7 +298,13 @@ export default function Workshops() {
             ...a("wsLeft", 0.2),
           }}
         >
-          <ComingSoonSlot />
+          <Workshop
+            workshopName={"Devops With Docker"}
+            workshopNumber={0}
+            registerLink={
+              "https://docs.google.com/forms/d/e/1FAIpQLSckhYR5ch5m9q8ogCtajFVZAK9pe-m0QxjNbP762Y7oLeOKVw/viewform?usp=publish-editor"
+            }
+          ></Workshop>
         </div>
         <div
           style={{
@@ -374,7 +381,7 @@ export default function Workshops() {
               top: `${note.y}vh`,
               width: `${note.size}px`,
               height: `${note.size}px`,
-              zIndex: 1,
+              zIndex: 0,
               pointerEvents: "none",
               userSelect: "none",
               WebkitUserSelect: "none",

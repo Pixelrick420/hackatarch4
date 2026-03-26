@@ -98,7 +98,7 @@ export default function Workshop({
         >
           <div
             style={{
-              fontSize: "clamp(0.9rem, 3.5vw, 2.5rem)",
+              fontSize: "clamp(0.3rem, 3.2vw, 2.5rem)",
               fontWeight: 400,
               fontFamily: "'Arcade Classic', 'Courier New', monospace",
               color: "black",
@@ -117,10 +117,9 @@ export default function Workshop({
               backgroundColor: "#0A3248",
               color: "white",
               fontFamily: "'Arcade Classic', 'Courier New', monospace",
-              fontSize: "clamp(0.7rem, 2.5vw, 1.5rem)",
+              fontSize: "clamp(0.6rem, 2.2vw, 1.5rem)",
               fontWeight: 400,
-              padding:
-                "clamp(0.3rem, 1.2vw, 0.8rem) clamp(0.8rem, 2.5vw, 2rem)",
+              padding: "clamp(0.3rem, 1vw, 0.8rem) clamp(0.8rem, 2vw, 2rem)",
               border: "3px solid black",
               borderRadius: "5px",
               cursor: "pointer",
@@ -130,7 +129,7 @@ export default function Workshop({
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.boxShadow = "6px 6px 0px #4FD7C0";
-              e.currentTarget.style.transform = "scale(1.05)";
+              e.currentTarget.style.transform = "scale(1.02)";
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.boxShadow = "4px 4px 0px #4FD7C0";

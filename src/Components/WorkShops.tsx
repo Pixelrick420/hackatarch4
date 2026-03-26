@@ -3,7 +3,6 @@ import Workshop from "./WorkShop";
 
 const background = "#F6EDC4";
 const navy = "#0A3248";
-const teal = "#4FD7C0";
 
 const KF = "workshops-kf";
 if (typeof document !== "undefined" && !document.getElementById(KF)) {
@@ -17,140 +16,6 @@ if (typeof document !== "undefined" && !document.getElementById(KF)) {
     @keyframes scrollRight { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
   `;
   document.head.appendChild(s);
-}
-
-function SpinningRing() {
-  const trapezoidCount = 15;
-  return (
-    <div
-      style={{
-        position: "absolute",
-        top: "50%",
-        left: "50%",
-        width: "100%",
-        height: "100%",
-        transform: "translate(-50%, -50%)",
-        animation: "spin 30s linear infinite",
-        userSelect: "none",
-        WebkitUserSelect: "none",
-        MozUserSelect: "none",
-        msUserSelect: "none",
-      }}
-    >
-      {Array.from({ length: trapezoidCount }).map((_, index) => {
-        const angle = (360 / trapezoidCount) * index;
-        return (
-          <div
-            key={index}
-            style={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              width: "18%",
-              height: "70%",
-              transformOrigin: "center bottom",
-              transform: `translate(-50%, -100%) rotate(${angle}deg)`,
-            }}
-          >
-            <img
-              src="/trapezoid.webp"
-              alt=""
-              style={{ width: "100%", height: "100%", objectFit: "contain" }}
-            />
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-function ComingSoonSlot() {
-  const [blink, setBlink] = useState(true);
-  useEffect(() => {
-    const id = setInterval(() => setBlink((b) => !b), 700);
-    return () => clearInterval(id);
-  }, []);
-  return (
-    <div
-      style={{
-        width: "100%",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        padding: "clamp(0.5rem, 2vw, 2rem)",
-        boxSizing: "border-box",
-      }}
-    >
-      <div
-        style={{
-          position: "relative",
-          width: "100%",
-          maxWidth: "600px",
-          aspectRatio: "1",
-        }}
-      >
-        <SpinningRing />
-        <div
-          style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: "66%",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: "0.8rem",
-            padding: "1rem",
-            boxSizing: "border-box",
-          }}
-        >
-          <div
-            style={{
-              width: "clamp(2.5rem, 8vw, 5rem)",
-              height: "clamp(2.5rem, 8vw, 5rem)",
-              border: `3px solid ${navy}`,
-              borderRadius: "50%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: background,
-              boxShadow: `3px 3px 0 ${teal}`,
-              flexShrink: 0,
-            }}
-          >
-            <span
-              style={{
-                fontFamily: "'American Captain', 'Arial Black', sans-serif",
-                fontSize: "clamp(1.2rem, 4vw, 2.8rem)",
-                color: navy,
-                lineHeight: 1,
-              }}
-            >
-              ?
-            </span>
-          </div>
-          <div
-            style={{
-              fontFamily: "'American Captain', 'Arial Black', sans-serif",
-              fontSize: "clamp(0.7rem, 2.2vw, 1.4rem)",
-              color: navy,
-              letterSpacing: "0.08em",
-              textAlign: "center",
-              lineHeight: 1.3,
-              opacity: blink ? 1 : 0.25,
-              transition: "opacity 0.15s ease",
-            }}
-          >
-            COMING
-            <br />
-            SOON
-          </div>
-        </div>
-      </div>
-    </div>
-  );
 }
 
 interface MusicNote {
@@ -299,12 +164,12 @@ export default function Workshops() {
           }}
         >
           <Workshop
-            workshopName={"Devops With Docker"}
+            workshopName={"Intro  To\nDevOps"}
             workshopNumber={0}
             registerLink={
               "https://docs.google.com/forms/d/e/1FAIpQLSckhYR5ch5m9q8ogCtajFVZAK9pe-m0QxjNbP762Y7oLeOKVw/viewform?usp=publish-editor"
             }
-          ></Workshop>
+          />
         </div>
         <div
           style={{
@@ -314,7 +179,13 @@ export default function Workshops() {
             ...a("wsRight", 0.35),
           }}
         >
-          <ComingSoonSlot />
+          <Workshop
+            workshopName={"Intro  To\nCAD"}
+            workshopNumber={0}
+            registerLink={
+              "https://docs.google.com/forms/d/e/1FAIpQLSc-Sm0tBaXSmLqg1wGFn6897jGSGzLJsn_pBHYQVFyZ2QWWuQ/viewform?usp=publish-editor"
+            }
+          />
         </div>
         {screenWidth >= 1600 && (
           <div

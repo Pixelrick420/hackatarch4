@@ -106,6 +106,7 @@ export default function Workshop({
               textAlign: "center",
               lineHeight: "1.2",
               wordBreak: "break-word",
+              whiteSpace: "pre-wrap",
             }}
           >
             {workshopName}
@@ -142,15 +143,15 @@ export default function Workshop({
 
         <style>
           {`
-                        @keyframes spin {
-                            from {
-                                transform: translate(-50%, -50%) rotate(0deg);
-                            }
-                            to {
-                                transform: translate(-50%, -50%) rotate(360deg);
-                            }
-                        }
-                    `}
+            @keyframes spin {
+                from {
+                    transform: translate(-50%, -50%) rotate(0deg);
+                }
+                to {
+                    transform: translate(-50%, -50%) rotate(360deg);
+                }
+            }
+        `}
         </style>
       </div>
     </div>

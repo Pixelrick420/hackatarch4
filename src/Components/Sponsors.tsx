@@ -33,7 +33,7 @@ const Sponsors: React.FC<SponsorsProps> = ({
   const [isWiggling, setIsWiggling] = useState(false);
   const [visible, setVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
-  const sponsors = ["/sponsor1.webp", "/sponsor2.webp"];
+  const sponsors = ["/sponsor1.webp", "/sponsor2.webp", "sponsor3.webp"];
   const intervalRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -231,7 +231,7 @@ const Sponsors: React.FC<SponsorsProps> = ({
               >
                 <div
                   style={{
-                    background: "#F6EDC4",
+                    background: "#FFFFFF",
                     border: `${screenWidth < 700 ? "4px" : "8px"} solid #5793A1CC`,
                     borderRadius: screenWidth < 700 ? "8px" : "12px",
                     padding: "clamp(8px, 3vw, 30px)",

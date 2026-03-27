@@ -8,6 +8,7 @@ import Hero from "./Components/Hero";
 import Navbar from "./Components/Navbar";
 import Sponsors from "./Components/Sponsors";
 import Workshops from "./Components/WorkShops";
+import { Analytics } from "@vercel/analytics/react";
 
 function App({ ready = false }: { ready?: boolean }) {
   return (
@@ -34,7 +35,7 @@ function App({ ready = false }: { ready?: boolean }) {
         <Sponsors />
       </div>
       <CommunityPartners />
-      {/* </FluidCursor> */}
+      <Analytics />
     </>
   );
 }

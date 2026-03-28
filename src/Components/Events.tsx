@@ -15,8 +15,7 @@ if (typeof document !== "undefined" && !document.getElementById(KF)) {
   document.head.appendChild(s);
 }
 
-const HQ_URL =
-  "https://unstop.com/hackathons/hackquest-an-18-hour-national-hackathon-hack-at-arch-40-government-engineering-college-gec-thrissur-1662896";
+const HQ_URL = "https://hackquest-leaderboard.vercel.app";
 const WR_URL =
   "https://unstop.com/p/war-room-hack-at-arch-40-hack-at-arch-40-government-engineering-college-gec-thrissur-1665538";
 
@@ -284,129 +283,39 @@ function Events() {
             {/* HackQuest block */}
             <div
               style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: "16px",
+                position: "relative",
                 width: "100%",
+                height: "384px",
+                flexShrink: 0,
               }}
             >
-              <div
-                style={{
-                  position: "relative",
-                  width: "100%",
-                  height: "384px",
-                  flexShrink: 0,
-                }}
-              >
-                <EventsWindow
-                  screen={HackQuestScreen}
-                  registrationUrl={HQ_URL}
-                  title="HACKQUEST"
-                  parentRef={undefined}
-                  initialX={0}
-                  initialY={0}
-                />
-              </div>
-              <a
-                href={HQ_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "10px",
-                  backgroundColor: "#0A3248",
-                  border: "3px solid #3aae95",
-                  borderRadius: "4px",
-                  padding: "12px 20px",
-                  color: "#3aae95",
-                  fontSize: "clamp(11px, 3.5vw, 15px)",
-                  fontWeight: 900,
-                  letterSpacing: "0.12em",
-                  fontFamily: "'American Captain', monospace",
-                  textDecoration: "none",
-                  whiteSpace: "nowrap",
-                  animation: visible
-                    ? "regPulse 2.4s ease-in-out infinite"
-                    : "none",
-                }}
-              >
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-                  <path
-                    d="M2 8h10M8 3l5 5-5 5"
-                    stroke="#3aae95"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                REGISTER — HACKQUEST
-              </a>
+              <EventsWindow
+                screen={HackQuestScreen}
+                registrationUrl={HQ_URL}
+                title="HACKQUEST"
+                parentRef={undefined}
+                initialX={0}
+                initialY={0}
+              />
             </div>
 
             {/* War Room block */}
             <div
               style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: "16px",
+                position: "relative",
                 width: "100%",
+                height: "384px",
+                flexShrink: 0,
               }}
             >
-              <div
-                style={{
-                  position: "relative",
-                  width: "100%",
-                  height: "384px",
-                  flexShrink: 0,
-                }}
-              >
-                <EventsWindow
-                  screen={WarRoomScreen}
-                  registrationUrl={WR_URL}
-                  title="WAR ROOM"
-                  parentRef={undefined}
-                  initialX={0}
-                  initialY={0}
-                />
-              </div>
-              <a
-                href={WR_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "10px",
-                  backgroundColor: "#1a0e00",
-                  border: "3px solid #E5AD58",
-                  borderRadius: "4px",
-                  padding: "12px 20px",
-                  color: "#E5AD58",
-                  fontSize: "clamp(11px, 3.5vw, 15px)",
-                  fontWeight: 900,
-                  letterSpacing: "0.12em",
-                  fontFamily: "'American Captain', monospace",
-                  textDecoration: "none",
-                  whiteSpace: "nowrap",
-                  animation: visible
-                    ? "regPulseWR 2.4s ease-in-out infinite"
-                    : "none",
-                }}
-              >
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-                  <path
-                    d="M2 8h10M8 3l5 5-5 5"
-                    stroke="#E5AD58"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                REGISTER — WAR ROOM
-              </a>
+              <EventsWindow
+                screen={WarRoomScreen}
+                registrationUrl={WR_URL}
+                title="WAR ROOM"
+                parentRef={undefined}
+                initialX={0}
+                initialY={0}
+              />
             </div>
           </div>
         ) : (

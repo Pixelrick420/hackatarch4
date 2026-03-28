@@ -364,22 +364,7 @@ const EventsWindow: React.FC<EventsWindowProps> = ({
                 justifyContent: "center",
                 pointerEvents: "none",
               }}
-            >
-              <div
-                style={{
-                  backgroundColor: "rgba(10,50,72,0.88)",
-                  border: "2px solid #3aae95",
-                  borderRadius: "4px",
-                  padding: "6px 16px",
-                  color: "#3aae95",
-                  fontSize: "clamp(9px,1.4vw,12px)",
-                  letterSpacing: "0.2em",
-                  fontFamily: "'American Captain',monospace",
-                }}
-              >
-                CLICK TO REGISTER
-              </div>
-            </div>
+            />
           )}
         </div>
 
